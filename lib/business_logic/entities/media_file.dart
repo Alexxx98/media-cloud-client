@@ -1,29 +1,32 @@
 import 'package:equatable/equatable.dart';
 
-abstract class MediaFileEntity extends Equatable {
+class MediaFileEntity extends Equatable {
   final int id;
-  final String filename;
+  final String? type;
+  final String name;
   final int directoryId;
   final int size;
-  final String? uploadedBy;
-  final DateTime? uploadedAt;
+  final String? addedBy;
+  final DateTime? addedAt;
 
   const MediaFileEntity({
     required this.id,
-    required this.filename,
+    this.type,
+    required this.name,
     required this.directoryId,
     required this.size,
-    this.uploadedBy,
-    this.uploadedAt,
+    this.addedBy,
+    this.addedAt,
   });
 
   @override
   List<Object> get props => [
     id,
-    filename,
+    ?type,
+    name,
     directoryId,
     size,
-    ?uploadedBy,
-    ?uploadedBy,
+    ?addedBy,
+    ?addedBy,
   ];
 }
