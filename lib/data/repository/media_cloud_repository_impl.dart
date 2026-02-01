@@ -1,6 +1,9 @@
-import 'package:client/business_logic/entities/media_directory.dart';
-import 'package:client/business_logic/entities/media_file.dart';
+import 'package:client/business_logic/entities/file.dart';
+import 'package:client/data/models/file.dart';
+import 'package:dio/dio.dart';
+
 import 'package:client/business_logic/repository/media_cloud_repository.dart';
+import 'package:client/core/data_state.dart';
 import 'package:client/data/data_source/remote/media_cloud_api_service.dart';
 
 class MediaCloudRepositoryImpl implements MediaCloudRepository {
@@ -8,83 +11,99 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
 
   MediaCloudRepositoryImpl(this._apiService);
 
+  // GET METHODS
+  // Get root
   @override
-  Future<Map<String, dynamic>> changePassword(int directoryId, String password) async {
-    // TODO: implement changePassword
-    throw UnimplementedError();
+  Future<DataState<List<FileModel>>> getRoot() async {
+    try {
+      final response = await _apiService.getRoot();
+      return DataSuccess(response);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
   }
 
+  // Get files from directory
   @override
-  Future<MediaDirectoryEntity> createDirectory(MediaDirectoryEntity directory) {
-    // TODO: implement createDirectory
-    throw UnimplementedError();
+  Future<DataState<List<FileModel>>> getFiles(int parentId) async {
+    try {
+      final response = await _apiService.getFiles(parentId);
+      return DataSuccess(response);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
   }
 
+  // download file
   @override
-  Future<Map<String, dynamic>> deleteDirectory(int directoryId) {
-    // TODO: implement deleteDirectory
-    throw UnimplementedError();
+  Future<DataState<Stream<List<int>>>> downloadFile(int fileId) async {
+    try {
+      final response = await _apiService.downloadFile(fileId);
+      return DataSuccess(response);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
   }
 
+  // Download multiple files
   @override
-  Future<MediaFileEntity> downloadFile(int fileId) {
-    // TODO: implement downloadFile
-    throw UnimplementedError();
+  Future<DataState<Stream<List<int>>>> downloadMultipleFiles(
+    List<int> fileIds,
+  ) async {
+    try {
+      final response = await _apiService.downloadMultipleFiles(fileIds);
+      return DataSuccess(response);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
   }
 
+  // Download directory
   @override
-  Future<List<MediaFileEntity>> downloadFiles(List<int> fileIds, String archiveName) {
-    // TODO: implement downloadFiles
-    throw UnimplementedError();
+  Future<DataState<Stream<List<int>>>> downloadDirectory(
+    int directoryId,
+    String? password,
+  ) async {
+    try {
+      final passwordHeader = {'x-directory-password': password};
+      final response = await _apiService.downloadDirectory(
+        directoryId,
+        passwordHeader,
+      );
+      return DataSuccess(response);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
   }
 
+  // Stream file
   @override
-  Future<List<MediaFileEntity>> getFiles(int parentId) {
-    // TODO: implement getFiles
-    throw UnimplementedError();
+  Future<DataState<Stream<List<int>>>> streamFile(int fileId) async {
+    try {
+      final response = await _apiService.streamFile(fileId);
+      return DataSuccess(response);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
   }
 
+  // POST METHODS
+  // Create directory
   @override
-  Future<List<MediaDirectoryEntity>> getRoot() {
-    // TODO: implement getRoot
-    throw UnimplementedError();
+  Future<DataState<FileModel>> createDirectory(FileEntity directory) async {
+    try {
+      final body = {
+        'name': directory.name,
+        'parent_id': directory.parentId,
+        'password': directory.password,
+        'added_by': directory.addedBy,
+      };
+      final response = await _apiService.createDirectory(body);
+      return DataSuccess(response);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
   }
 
-  @override
-  Future<Map<String, dynamic>> removeFile(int fileId) {
-    // TODO: implement removeFile
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Map<String, dynamic>> removeMultipleFiles(List<int> fileIds) {
-    // TODO: implement removeMultipleFiles
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<MediaDirectoryEntity> renameDirectory(int directoryId, String name) {
-    // TODO: implement renameDirectory
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<MediaFileEntity> renameFile(int fileId, String name) {
-    // TODO: implement renameFile
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<MediaFileEntity> streamFile(int fileId) {
-    // TODO: implement streamFile
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<MediaFileEntity>> uploadFiles(List<MediaFileEntity> files) {
-    // TODO: implement uploadFiles
-    throw UnimplementedError();
-  }
-
-  @override
+  // Upload files
 }

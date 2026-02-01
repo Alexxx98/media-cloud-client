@@ -1,10 +1,9 @@
 // Generate part file: dart run build_runner build
 
-import 'package:client/data/models/media_file.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 
-import 'package:client/data/models/media_directory.dart';
+import 'package:client/data/models/file.dart';
 
 import 'package:client/core/constants.dart';
 
@@ -17,13 +16,11 @@ abstract class MediaCloudApiService {
   // GET METHODS
   // Get app root
   @GET('/root')
-  Future<List<MediaDirectoryModel>> getRoot();
+  Future<List<FileModel>> getRoot();
 
   // Get files and directories of parent directory
   @GET('/directory/{directoryId}')
-  Future<List<Map<String, dynamic>>> getFiles(
-    @Path('directoryId') int parentId,
-  );
+  Future<List<FileModel>> getFiles(@Path('directoryId') int parentId);
 
   // Download single file
   @GET('/file/{fileId}/download')
@@ -37,33 +34,35 @@ abstract class MediaCloudApiService {
 
   @GET('/directory/{directoryId}/download')
   Future<Stream<List<int>>> downloadDirectory(
-    @Header('x-directory-password') String password,
     @Path('directoryId') int directoryId,
+    @Header('x-directory-password') Map<String, String?> passwordHeader,
   );
+
+  // Stream File
+  @GET('file/{fileId}/stream')
+  Future<Stream<List<int>>> streamFile(@Path('fileId') int fileId);
 
   // POST METHODS
   // Create directory
   @POST('/directory/create')
-  Future<MediaDirectoryModel> createDirectory(
-    @Body() Map<String, dynamic> body,
-  );
+  Future<FileModel> createDirectory(@Body() Map<String, dynamic> body);
 
   // Upload files
   @POST('/file/upload')
-  Future<List<MediaFileModel>> uploadFiles(List<MediaFileModel> mediaFiles);
+  Future<List<FileModel>> uploadFiles(@Body() FormData files);
 
   // PATCH METHODS
   // Rename directory
   @PATCH('/directory/{directoryId}/rename')
-  Future<MediaDirectoryModel> renameDirectory(
+  Future<FileModel> renameDirectory(
     @Path('directoryId') int directoryId,
-    @Header('x-direcotry-password') String password,
+    @Header('x-directory-password') String password,
     @Body() Map<String, String> body,
   );
 
   // Rename file
   @PATCH('/file/{fileId}/rename')
-  Future<MediaFileModel> renameFile(
+  Future<FileModel> renameFile(
     @Path('fileId') int fileId,
     @Body() Map<String, String> body,
   );
@@ -79,7 +78,7 @@ abstract class MediaCloudApiService {
   // Delete directory
   @DELETE('/directory/{directoryId}/delete')
   Future<Map<String, String>> deleteDirectory(
-    @Path('directoryId') int diretoryId,
+    @Path('directoryId') int directoryId,
   );
 
   // Delete file
