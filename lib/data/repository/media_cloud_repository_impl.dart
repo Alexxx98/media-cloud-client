@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:client/business_logic/entities/file.dart';
 import 'package:client/data/models/file.dart';
 import 'package:dio/dio.dart';
@@ -106,4 +108,128 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
   }
 
   // Upload files
+  @override
+  Future<DataState<List<FileModel>>> uploadFiles(
+    int directoryId,
+    List<File> files,
+    String? uploadedBy,
+  ) async {
+    try {
+      // Write all files as MultipartFile into a list
+      List<MultipartFile> multipartFiles = [];
+      for (int index = 0; index < files.length; index++) {
+        MultipartFile multipartFile = await MultipartFile.fromFile(
+          files[index].path,
+        );
+        multipartFiles.add(multipartFile);
+      }
+      // Create form data body
+      final body = FormData.fromMap({
+        'files': multipartFiles,
+        'parent_id': directoryId,
+        'uploaded_by': ?uploadedBy,
+      });
+      final response = await _apiService.uploadFiles(body);
+      return DataSuccess(response);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  // PATCH METHODS
+  // Rename directory
+  @override
+  Future<DataState<FileModel>> renameDirectory(
+    int directoryId,
+    String name,
+    String? password,
+  ) async {
+    try {
+      final passwordHeader = {'x-directory-password': password};
+      final body = {'original_name': name};
+      final response = await _apiService.renameDirectory(
+        directoryId,
+        passwordHeader,
+        body,
+      );
+      return DataSuccess(response);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  // Change directory's password
+  @override
+  Future<DataState<Map<String, String>>> changePassword(
+    int directoryId,
+    String currentPassword,
+    String newPassword,
+  ) async {
+    try {
+      final body = {
+        'current_password': currentPassword,
+        'new_password': newPassword,
+      };
+      final response = await _apiService.changePassword(directoryId, body);
+      return DataSuccess(response);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  // Rename file
+  @override
+  Future<DataState<FileModel>> renameFile(int fileId, String name) async {
+    try {
+      final body = {'original_name': name};
+      final response = await _apiService.renameFile(fileId, body);
+      return DataSuccess(response);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  // DELETE METHODS
+  // Delete directory
+  @override
+  Future<DataState<Map<String, String>>> deleteDirectory(
+    int directoryId,
+    String password,
+  ) async {
+    try {
+      final passwordHeader = {'x-directory-password': password};
+      final response = await _apiService.deleteDirectory(
+        directoryId,
+        passwordHeader,
+      );
+      return DataSuccess(response);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  // Remove File
+  @override
+  Future<DataState<Map<String, String>>> removeFile(int fileId) async {
+    try {
+      final response = await _apiService.removeFile(fileId);
+      return DataSuccess(response);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  // Remove multiple files
+  @override
+  Future<DataState<Map<String, String>>> removeMultipleFiles(
+    List<int> fileIds,
+  ) async {
+    try {
+      final query = {'file_ids': fileIds};
+      final response = await _apiService.removeMultipleFiles(query);
+      return DataSuccess(response);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
 }

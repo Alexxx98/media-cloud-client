@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:client/business_logic/entities/file.dart';
 import 'package:client/core/data_state.dart';
 
@@ -15,24 +17,34 @@ abstract class MediaCloudRepository {
 
   // Post methods
   Future<DataState<FileEntity>> createDirectory(FileEntity directory);
-  Future<DataState<List<FileEntity>>> uploadFiles(List<FileEntity> files);
-  Future<DataState<List<FileEntity>>> downloadFiles(
-    List<int> fileIds,
-    String archiveName,
+  Future<DataState<List<FileEntity>>> uploadFiles(
+    int directoryId,
+    List<File> files,
+    String? uploadedBy,
   );
 
-  // Update methods
-  Future<DataState<FileEntity>> renameDirectory(int directoryId, String name);
-  Future<DataState<Map<String, dynamic>>> changePassword(
+  // Patch methods
+  Future<DataState<FileEntity>> renameDirectory(
+    int directoryId,
+    String name,
+    String? password,
+  );
+
+  // Change directory's password
+  Future<DataState<Map<String, String>>> changePassword(
+    int directoryId,
+    String currentPassword,
+    String newPassword,
+  );
+
+  // Rename file
+  Future<DataState<FileEntity>> renameFile(int fileId, String name);
+
+  // Delete methods
+  Future<DataState<Map<String, String>>> deleteDirectory(
     int directoryId,
     String password,
   );
-  Future<DataState<FileEntity>> renameFile(int fileId, String name);
-
-  // Destroy methods
-  Future<DataState<Map<String, dynamic>>> deleteDirectory(int directoryId);
-  Future<DataState<Map<String, dynamic>>> removeFile(int fileId);
-  Future<DataState<Map<String, dynamic>>> removeMultipleFiles(
-    List<int> fileIds,
-  );
+  Future<DataState<Map<String, String>>> removeFile(int fileId);
+  Future<DataState<Map<String, String>>> removeMultipleFiles(List<int> fileIds);
 }

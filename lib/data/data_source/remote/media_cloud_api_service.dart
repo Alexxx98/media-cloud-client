@@ -49,14 +49,14 @@ abstract class MediaCloudApiService {
 
   // Upload files
   @POST('/file/upload')
-  Future<List<FileModel>> uploadFiles(@Body() FormData files);
+  Future<List<FileModel>> uploadFiles(@Body() FormData body);
 
   // PATCH METHODS
   // Rename directory
   @PATCH('/directory/{directoryId}/rename')
   Future<FileModel> renameDirectory(
     @Path('directoryId') int directoryId,
-    @Header('x-directory-password') String password,
+    @Header('x-directory-password') Map<String, String?>? passwordHeader,
     @Body() Map<String, String> body,
   );
 
@@ -79,15 +79,16 @@ abstract class MediaCloudApiService {
   @DELETE('/directory/{directoryId}/delete')
   Future<Map<String, String>> deleteDirectory(
     @Path('directoryId') int directoryId,
+    @Header('x-directory-password') Map<String, String> passwordHeader,
   );
 
   // Delete file
   @DELETE('/file/{fileId}/delete')
-  Future<Map<String, String>> deleteFile(@Path('fileId') int fileId);
+  Future<Map<String, String>> removeFile(@Path('fileId') int fileId);
 
   // Delete multiple files
   @DELETE('/files/delete')
-  Future<Map<String, String>> deleteMultipleFiles(
-    @Query('fileIds') List<int> fileIds,
+  Future<Map<String, String>> removeMultipleFiles(
+    @Query('fileIds') Map<String, List<int>> query,
   );
 }
