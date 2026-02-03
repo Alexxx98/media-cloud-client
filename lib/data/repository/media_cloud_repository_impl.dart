@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 
@@ -111,16 +112,14 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
   @override
   Future<DataState<List<FileModel>>> uploadFiles(
     int directoryId,
-    List<File> files,
+    List<Uint8List> files,
     String? uploadedBy,
   ) async {
     try {
       // Write all files as MultipartFile into a list
       List<MultipartFile> multipartFiles = [];
       for (int index = 0; index < files.length; index++) {
-        MultipartFile multipartFile = await MultipartFile.fromFile(
-          files[index].path,
-        );
+        MultipartFile multipartFile = MultipartFile.fromBytes(files[index]);
         multipartFiles.add(multipartFile);
       }
       // Create form data body

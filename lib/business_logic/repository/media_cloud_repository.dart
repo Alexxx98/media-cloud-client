@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:client/business_logic/entities/file.dart';
 import 'package:client/core/data_state.dart';
@@ -19,7 +20,7 @@ abstract class MediaCloudRepository {
   Future<DataState<FileEntity>> createDirectory(FileEntity directory);
   Future<DataState<List<FileEntity>>> uploadFiles(
     int directoryId,
-    List<File> files,
+    List<Uint8List> files,
     String? uploadedBy,
   );
 
