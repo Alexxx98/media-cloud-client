@@ -24,23 +24,22 @@ abstract class MediaCloudApiService {
 
   // Download single file
   @GET('/file/{fileId}/download')
-  Future<Stream<List<int>>> downloadFile(@Path('fileId') int fileId);
+  Future<List<int>> downloadFile(@Path('fileId') int fileId);
 
   // Download multiple files
   @GET('/files/download')
-  Future<Stream<List<int>>> downloadMultipleFiles(
-    @Query('fileIds') List<int> fileIds,
-  );
+  Future<List<int>> downloadMultipleFiles(@Query('fileIds') List<int> fileIds);
 
+  // Download directory
   @GET('/directory/{directoryId}/download')
-  Future<Stream<List<int>>> downloadDirectory(
+  Future<List<int>> downloadDirectory(
     @Path('directoryId') int directoryId,
     @Header('x-directory-password') Map<String, String?> passwordHeader,
   );
 
   // Stream File
   @GET('file/{fileId}/stream')
-  Future<Stream<List<int>>> streamFile(@Path('fileId') int fileId);
+  Future<List<int>> streamFile(@Path('fileId') int fileId);
 
   // POST METHODS
   // Create directory
@@ -79,7 +78,7 @@ abstract class MediaCloudApiService {
   @DELETE('/directory/{directoryId}/delete')
   Future<Map<String, String>> deleteDirectory(
     @Path('directoryId') int directoryId,
-    @Header('x-directory-password') Map<String, String> passwordHeader,
+    @Header('x-directory-password') Map<String, String?>? passwordHeader,
   );
 
   // Delete file

@@ -7,13 +7,13 @@ abstract class MediaCloudRepository {
   // Get methods
   Future<DataState<List<FileEntity>>> getRoot();
   Future<DataState<List<FileEntity>>> getFiles(int parentId);
-  Future<DataState<Stream<List<int>>>> downloadFile(int fileId);
-  Future<DataState<Stream<List<int>>>> downloadMultipleFiles(List<int> fileIds);
-  Future<DataState<Stream<List<int>>>> downloadDirectory(
+  Future<DataState<List<int>>> downloadFile(int fileId);
+  Future<DataState<List<int>>> downloadMultipleFiles(List<int> fileIds);
+  Future<DataState<List<int>>> downloadDirectory(
     int directoryId,
     String? password,
   );
-  Future<DataState<Stream<List<int>>>> streamFile(int fileId);
+  Future<DataState<List<int>>> streamFile(int fileId);
 
   // Post methods
   Future<DataState<FileEntity>> createDirectory(FileEntity directory);
@@ -43,7 +43,7 @@ abstract class MediaCloudRepository {
   // Delete methods
   Future<DataState<Map<String, String>>> deleteDirectory(
     int directoryId,
-    String password,
+    String? password,
   );
   Future<DataState<Map<String, String>>> removeFile(int fileId);
   Future<DataState<Map<String, String>>> removeMultipleFiles(List<int> fileIds);

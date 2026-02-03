@@ -1,12 +1,14 @@
 import 'dart:io';
 
-import 'package:client/business_logic/entities/file.dart';
-import 'package:client/data/models/file.dart';
 import 'package:dio/dio.dart';
 
+import 'package:client/business_logic/entities/file.dart';
 import 'package:client/business_logic/repository/media_cloud_repository.dart';
-import 'package:client/core/data_state.dart';
+
+import 'package:client/data/models/file.dart';
 import 'package:client/data/data_source/remote/media_cloud_api_service.dart';
+
+import 'package:client/core/data_state.dart';
 
 class MediaCloudRepositoryImpl implements MediaCloudRepository {
   final MediaCloudApiService _apiService;
@@ -38,7 +40,7 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
 
   // download file
   @override
-  Future<DataState<Stream<List<int>>>> downloadFile(int fileId) async {
+  Future<DataState<List<int>>> downloadFile(int fileId) async {
     try {
       final response = await _apiService.downloadFile(fileId);
       return DataSuccess(response);
@@ -49,9 +51,7 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
 
   // Download multiple files
   @override
-  Future<DataState<Stream<List<int>>>> downloadMultipleFiles(
-    List<int> fileIds,
-  ) async {
+  Future<DataState<List<int>>> downloadMultipleFiles(List<int> fileIds) async {
     try {
       final response = await _apiService.downloadMultipleFiles(fileIds);
       return DataSuccess(response);
@@ -62,7 +62,7 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
 
   // Download directory
   @override
-  Future<DataState<Stream<List<int>>>> downloadDirectory(
+  Future<DataState<List<int>>> downloadDirectory(
     int directoryId,
     String? password,
   ) async {
@@ -80,7 +80,7 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
 
   // Stream file
   @override
-  Future<DataState<Stream<List<int>>>> streamFile(int fileId) async {
+  Future<DataState<List<int>>> streamFile(int fileId) async {
     try {
       final response = await _apiService.streamFile(fileId);
       return DataSuccess(response);
@@ -194,7 +194,7 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
   @override
   Future<DataState<Map<String, String>>> deleteDirectory(
     int directoryId,
-    String password,
+    String? password,
   ) async {
     try {
       final passwordHeader = {'x-directory-password': password};
