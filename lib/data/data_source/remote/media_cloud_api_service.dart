@@ -1,5 +1,7 @@
 // Generate part file: dart run build_runner build
 
+import 'dart:typed_data';
+
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 
@@ -24,22 +26,22 @@ abstract class MediaCloudApiService {
 
   // Download single file
   @GET('/file/{fileId}/download')
-  Future<List<int>> downloadFile(@Path('fileId') int fileId);
+  Future<Uint8List> downloadFile(@Path('fileId') int fileId);
 
   // Download multiple files
   @GET('/files/download')
-  Future<List<int>> downloadMultipleFiles(@Query('fileIds') List<int> fileIds);
+  Future<Uint8List> downloadMultipleFiles(@Query('fileIds') List<int> fileIds);
 
   // Download directory
   @GET('/directory/{directoryId}/download')
-  Future<List<int>> downloadDirectory(
+  Future<Uint8List> downloadDirectory(
     @Path('directoryId') int directoryId,
     @Header('x-directory-password') Map<String, String?> passwordHeader,
   );
 
   // Stream File
   @GET('file/{fileId}/stream')
-  Future<List<int>> streamFile(@Path('fileId') int fileId);
+  Future<Uint8List> streamFile(@Path('fileId') int fileId);
 
   // POST METHODS
   // Create directory

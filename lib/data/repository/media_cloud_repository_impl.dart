@@ -41,7 +41,7 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
 
   // download file
   @override
-  Future<DataState<List<int>>> downloadFile(int fileId) async {
+  Future<DataState<Uint8List>> downloadFile(int fileId) async {
     try {
       final response = await _apiService.downloadFile(fileId);
       return DataSuccess(response);
@@ -52,7 +52,7 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
 
   // Download multiple files
   @override
-  Future<DataState<List<int>>> downloadMultipleFiles(List<int> fileIds) async {
+  Future<DataState<Uint8List>> downloadMultipleFiles(List<int> fileIds) async {
     try {
       final response = await _apiService.downloadMultipleFiles(fileIds);
       return DataSuccess(response);
@@ -63,7 +63,7 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
 
   // Download directory
   @override
-  Future<DataState<List<int>>> downloadDirectory(
+  Future<DataState<Uint8List>> downloadDirectory(
     int directoryId,
     String? password,
   ) async {
@@ -81,7 +81,7 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
 
   // Stream file
   @override
-  Future<DataState<List<int>>> streamFile(int fileId) async {
+  Future<DataState<Uint8List>> streamFile(int fileId) async {
     try {
       final response = await _apiService.streamFile(fileId);
       return DataSuccess(response);

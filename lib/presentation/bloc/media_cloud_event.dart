@@ -6,10 +6,21 @@ abstract class MediaCloudEvent {
   MediaCloudEvent();
 }
 
+class GetRootEvent extends MediaCloudEvent {
+  GetRootEvent();
+}
+
 class GetFilesEvent extends MediaCloudEvent {
-  final int? parentId;
+  final int parentId;
 
   GetFilesEvent(this.parentId);
+}
+
+class DownloadDirectoryEvent extends MediaCloudEvent {
+  final int directoryId;
+  final String? password;
+
+  DownloadDirectoryEvent(this.directoryId, this.password);
 }
 
 class DownloadFileEvent extends MediaCloudEvent {
@@ -37,38 +48,51 @@ class CreateDirectoryEvent extends MediaCloudEvent {
 }
 
 class UploadFilesEvent extends MediaCloudEvent {
+  final int directoryId;
   final List<Uint8List> files;
+  final String? uploadedBy;
 
-  UploadFilesEvent(this.files);
+  UploadFilesEvent(this.directoryId, this.files, this.uploadedBy);
+}
+
+class RenameDirectoryEvent extends MediaCloudEvent {
+  final int directoryId;
+  final String name;
+  final String? password;
+
+  RenameDirectoryEvent(this.directoryId, this.name, this.password);
 }
 
 class RenameFileEvent extends MediaCloudEvent {
+  final int fileId;
   final String name;
 
-  RenameFileEvent(this.name);
+  RenameFileEvent(this.fileId, this.name);
 }
 
 class ChangePasswordEvent extends MediaCloudEvent {
-  final String password;
+  final int directoryId;
+  final String currentPassword;
+  final String newPassword;
 
-  ChangePasswordEvent(this.password);
+  ChangePasswordEvent(this.directoryId, this.currentPassword, this.newPassword);
 }
 
-class DeleteDirectory extends MediaCloudEvent {
+class DeleteDirectoryEvent extends MediaCloudEvent {
   final int directoryId;
   final String? password;
 
-  DeleteDirectory(this.directoryId, this.password);
+  DeleteDirectoryEvent(this.directoryId, this.password);
 }
 
-class RemoveFile extends MediaCloudEvent {
+class RemoveFileEvent extends MediaCloudEvent {
   final int fileId;
 
-  RemoveFile(this.fileId);
+  RemoveFileEvent(this.fileId);
 }
 
-class RemoveMultipleFiles extends MediaCloudEvent {
+class RemoveMultipleFilesEvent extends MediaCloudEvent {
   final List<int> fileIds;
 
-  RemoveMultipleFiles(this.fileIds);
+  RemoveMultipleFilesEvent(this.fileIds);
 }

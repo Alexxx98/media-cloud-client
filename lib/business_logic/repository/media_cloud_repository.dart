@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:client/business_logic/entities/file.dart';
@@ -8,13 +7,13 @@ abstract class MediaCloudRepository {
   // Get methods
   Future<DataState<List<FileEntity>>> getRoot();
   Future<DataState<List<FileEntity>>> getFiles(int parentId);
-  Future<DataState<List<int>>> downloadFile(int fileId);
-  Future<DataState<List<int>>> downloadMultipleFiles(List<int> fileIds);
-  Future<DataState<List<int>>> downloadDirectory(
+  Future<DataState<Uint8List>> downloadFile(int fileId);
+  Future<DataState<Uint8List>> downloadMultipleFiles(List<int> fileIds);
+  Future<DataState<Uint8List>> downloadDirectory(
     int directoryId,
     String? password,
   );
-  Future<DataState<List<int>>> streamFile(int fileId);
+  Future<DataState<Uint8List>> streamFile(int fileId);
 
   // Post methods
   Future<DataState<FileEntity>> createDirectory(FileEntity directory);
