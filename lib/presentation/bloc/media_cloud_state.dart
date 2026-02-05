@@ -1,11 +1,13 @@
 import 'package:client/business_logic/entities/file.dart';
 
 abstract class MediaCloudState {
-  MediaCloudState();
+  final int? currentDirectoryId;
+
+  MediaCloudState({this.currentDirectoryId});
 }
 
 class CloudInitial extends MediaCloudState {
-  CloudInitial();
+  CloudInitial({super.currentDirectoryId});
 }
 
 class CloudLoading extends MediaCloudState {
@@ -15,7 +17,7 @@ class CloudLoading extends MediaCloudState {
 class FilesLoaded extends MediaCloudState {
   final List<FileEntity> files;
 
-  FilesLoaded(this.files);
+  FilesLoaded(this.files) : super(currentDirectoryId: files[0].parentId);
 }
 
 class FilesDownloaded extends MediaCloudState {
