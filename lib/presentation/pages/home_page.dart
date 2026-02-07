@@ -1,4 +1,8 @@
+import 'package:client/dependency_injection.dart';
+import 'package:client/presentation/bloc/media_cloud_bloc.dart';
+import 'package:client/presentation/widgets/create_directory_form.dart';
 import 'package:client/presentation/widgets/file_viewer.dart';
+import 'package:client/presentation/widgets/option_drawer.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,34 +35,10 @@ class _HomePageState extends State<HomePage> {
         ],
         backgroundColor: Colors.black,
       ),
-      endDrawer: Drawer(
-        backgroundColor: Colors.black,
-        child: ListView(
-          padding: EdgeInsets.all(20),
-          children: [
-            // Create new directory button
-            ListTile(
-              leading: Icon(Icons.create_new_folder),
-              title: Text(
-                'Create Directory',
-                style: TextStyle(color: Colors.grey.shade300),
-              ),
-              onTap: () {},
-            ),
 
-            // Upload files button
-            ListTile(
-              leading: Icon(Icons.file_upload),
-              title: Text(
-                'Upload Files',
-                style: TextStyle(color: Colors.grey.shade300),
-              ),
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
-      body: FileViewer(),
+      // Options
+      endDrawer: OptionDrawer(),
+      body: Placeholder(),
     );
   }
 }

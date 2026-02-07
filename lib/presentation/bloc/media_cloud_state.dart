@@ -15,9 +15,10 @@ class CloudLoading extends MediaCloudState {
 }
 
 class FilesLoaded extends MediaCloudState {
-  final List<FileEntity> files;
+  final int? parentId;
+  final List<FileEntity>? files;
 
-  FilesLoaded(this.files) : super(currentDirectoryId: files[0].parentId);
+  FilesLoaded(this.files, this.parentId) : super(currentDirectoryId: parentId);
 }
 
 class FilesDownloaded extends MediaCloudState {

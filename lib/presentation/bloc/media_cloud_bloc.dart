@@ -72,8 +72,8 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
   ) async {
     emit(CloudLoading());
     final dataState = await getRootUseCase();
-    if (dataState is DataSuccess && dataState.data != null) {
-      emit(FilesLoaded(dataState.data!));
+    if (dataState is DataSuccess) {
+      emit(FilesLoaded(dataState.data, null));
     } else {
       emit(CloudError('Could not load cloud root'));
     }
@@ -85,8 +85,8 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
   ) async {
     emit(CloudLoading());
     final dataState = await getFileUseCase(event.parentId);
-    if (dataState is DataSuccess && dataState.data != null) {
-      emit(FilesLoaded(dataState.data!));
+    if (dataState is DataSuccess) {
+      emit(FilesLoaded(dataState.data, event.parentId));
     } else {
       emit(CloudError("Could not load directory's files"));
     }
