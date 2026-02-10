@@ -1,4 +1,5 @@
 import 'package:client/business_logic/entities/file.dart';
+import 'package:logger/logger.dart';
 
 class FileModel extends FileEntity {
   const FileModel({
@@ -22,7 +23,7 @@ class FileModel extends FileEntity {
     size: json['size'] as int?,
     mimeType: json['mime_type'] as String?,
     addedBy: json['added_by'] as String? ?? '',
-    addedAt: json['added_at'] as DateTime,
+    addedAt: DateTime.parse(json['added_at']).toLocal(),
   );
 
   // serializer

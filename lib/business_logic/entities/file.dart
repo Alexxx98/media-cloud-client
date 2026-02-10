@@ -17,7 +17,7 @@ class FileEntity extends Equatable {
     required this.name,
     this.parentId,
     this.password,
-    required this.size,
+    this.size,
     this.mimeType,
     this.addedBy,
     this.addedAt,

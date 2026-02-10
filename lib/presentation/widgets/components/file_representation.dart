@@ -1,4 +1,3 @@
-import 'package:client/dependency_injection.dart';
 import 'package:client/presentation/bloc/media_cloud_bloc.dart';
 import 'package:client/presentation/bloc/media_cloud_event.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +20,14 @@ class FileRepresentation extends StatelessWidget {
     if (fileType == 'media') {
       return IconButton(
         icon: Icon(Icons.file_open),
+        color: Colors.black,
         onPressed: () =>
             context.read<MediaCloudBloc>().add(StreamFileEvent(fileId)),
       );
     } else {
       return IconButton(
         icon: Icon(Icons.folder),
+        color: Colors.black,
         onPressed: () =>
             context.read<MediaCloudBloc>().add(GetFilesEvent(fileId)),
       );

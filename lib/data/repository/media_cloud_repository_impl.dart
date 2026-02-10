@@ -24,6 +24,7 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
       final response = await _apiService.getRoot();
       return DataSuccess(response);
     } on DioException catch (e) {
+      print(e);
       return DataFailed(e);
     }
   }
@@ -104,6 +105,7 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
       final response = await _apiService.createDirectory(body);
       return DataSuccess(response);
     } on DioException catch (e) {
+      print(e);
       return DataFailed(e);
     }
   }
