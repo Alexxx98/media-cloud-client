@@ -31,44 +31,26 @@ class _FileViewer extends State<FileViewer> {
           backgroundColor: Colors.grey.shade600,
           body: BlocBuilder<MediaCloudBloc, MediaCloudState>(
             builder: (context, state) {
-              if (state is FilesLoaded) {
-                return Column(
-                  children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: IconButton(
-                            icon: Icon(Icons.create_new_folder),
-                            onPressed: () {
-                              final cloudBloc = context.read<MediaCloudBloc>();
-
-                              showDialog(
-                                context: context,
-                                builder: (dialogContext) {
-                                  return CreateDirectoryForm(
-                                    parentId: state.parentId,
-                                    bloc: cloudBloc,
-                                  );
-                                },
-                              );
-                            },
-                            iconSize: 30,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: IconButton(
-                            icon: Icon(Icons.upload_file),
-                            onPressed: () {},
-                            iconSize: 30,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+              if (state is FilesLoaded && state.files != null) {
+                return GridView.builder(
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 150,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                  ),
+                  itemCount: state.files!.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: FileRepresentation(file: state.files![index]),
+                    );
+                  },
                 );
               }
+              if (state is CloudLoading) {
+                return CircularProgressIndicator();
+              }
+
               if (state is CloudError) {
                 print(state.message);
               }
