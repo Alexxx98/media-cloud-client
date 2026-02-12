@@ -1,5 +1,6 @@
 import 'package:client/dependency_injection.dart';
 import 'package:client/presentation/bloc/media_cloud_bloc.dart';
+import 'package:client/presentation/bloc/media_cloud_event.dart';
 import 'package:client/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +22,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => get_it<MediaCloudBloc>()),
+          // '..' is the cascade operator, in this case it adds event immediately
+          BlocProvider(
+            create: (context) => get_it<MediaCloudBloc>()..add(GetRootEvent()),
+          ),
         ],
         child: const HomePage(),
       ),

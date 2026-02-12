@@ -11,27 +11,29 @@ class FileRepresentation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MediaCloudBloc mediaCloudBloc = context.read<MediaCloudBloc>();
+
     if (file.type == 'media') {
+      // File
       return Column(
         children: [
           IconButton(
             icon: Icon(Icons.file_open),
-            color: Colors.black,
-            onPressed: () =>
-                context.read<MediaCloudBloc>().add(StreamFileEvent(file.id!)),
+            color: Colors.blueGrey.shade900,
+            onPressed: () => mediaCloudBloc.add(StreamFileEvent(file.id!)),
           ),
           Text(file.name),
         ],
       );
     } else {
+      // Directory
       return Column(
         children: [
           IconButton(
             icon: Icon(Icons.folder),
             color: Colors.blueGrey.shade900,
             iconSize: 75,
-            onPressed: () =>
-                context.read<MediaCloudBloc>().add(GetFilesEvent(file.id!)),
+            onPressed: () => mediaCloudBloc.add(GetFilesEvent(file.id!)),
           ),
           Text(file.name, style: TextStyle(fontWeight: FontWeight.bold)),
         ],
