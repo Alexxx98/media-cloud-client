@@ -11,15 +11,26 @@ class FileViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MediaCloudBloc mediaCloudBloc = context.read<MediaCloudBloc>();
+    int? currentDirectoryParentId;
     return Scaffold(
       backgroundColor: Colors.grey.shade600,
       body: BlocConsumer<MediaCloudBloc, MediaCloudState>(
         listener: (context, state) {
+          if (state is FilesLoaded) {
+            currentDirectoryParentId = state.currentDirectoryParentId;
+          }
+
           if (state is DirectoryCreated) {
-            if (state.currentDirectoryId == null) {
+            if (state.directory.parentId == null) {
               mediaCloudBloc.add(GetRootEvent());
             } else {
-              mediaCloudBloc.add(GetFilesEvent(state.currentDirectoryId!));
+              mediaCloudBloc.add(
+                GetFilesEvent(
+                  state.directory.parentId!,
+                  currentDirectoryParentId,
+                  null,
+                ),
+              );
             }
           }
           if (state is CloudError) {

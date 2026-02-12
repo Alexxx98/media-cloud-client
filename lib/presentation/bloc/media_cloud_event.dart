@@ -11,9 +11,11 @@ class GetRootEvent extends MediaCloudEvent {
 }
 
 class GetFilesEvent extends MediaCloudEvent {
-  final int parentId;
+  final int directoryId;
+  final int? directoryParentId;
+  final String? password;
 
-  GetFilesEvent(this.parentId);
+  GetFilesEvent(this.directoryId, this.directoryParentId, this.password);
 }
 
 class DownloadDirectoryEvent extends MediaCloudEvent {

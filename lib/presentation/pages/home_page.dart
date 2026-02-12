@@ -15,46 +15,58 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int? currentDirectoryId;
-  int? parentId;
+  int? currentDirectoryParentId;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: currentDirectoryId != null
-            ? IconButton(
-                onPressed: () {
-                  if (parentId != null) {
-                    context.read<MediaCloudBloc>().add(
-                      GetFilesEvent(parentId!),
-                    );
-                  } else {
-                    context.read<MediaCloudBloc>().add(GetRootEvent());
-                  }
-                },
-                icon: Icon(Icons.arrow_back),
-              )
-            : null,
-        title: Text(
-          'Cloud.Home',
-          style: TextStyle(color: Colors.grey.shade300),
-        ),
-        backgroundColor: Colors.black,
-        actions: [
-          Builder(
-            builder: (context) {
-              return IconButton(
-                onPressed: () {
-                  Scaffold.of(context).openEndDrawer();
-                },
-                icon: Icon(Icons.more_vert, color: Colors.grey.shade300),
-              );
+    return BlocListener(
+      bloc: context.read<MediaCloudBloc>(),
+      listener: (context, state) {
+        if (state is FilesLoaded) {
+          currentDirectoryId = state.currentDirectoryId;
+          currentDirectoryParentId = state.currentDirectoryParentId;
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          // Get previous directory files
+          leading: IconButton(
+            onPressed: () {
+              if (currentDirectoryParentId != null) {
+                context.read<MediaCloudBloc>().add(
+                  GetFilesEvent(
+                    currentDirectoryId!,
+                    currentDirectoryParentId,
+                    null,
+                  ),
+                );
+              } else {
+                context.read<MediaCloudBloc>().add(GetRootEvent());
+              }
             },
+            icon: Icon(Icons.arrow_back),
           ),
-        ],
+          title: Text(
+            'Cloud.Home',
+            style: TextStyle(color: Colors.grey.shade300),
+          ),
+          backgroundColor: Colors.black,
+          actions: [
+            Builder(
+              builder: (context) {
+                return IconButton(
+                  onPressed: () {
+                    Scaffold.of(context).openEndDrawer();
+                  },
+                  icon: Icon(Icons.more_vert, color: Colors.grey.shade300),
+                );
+              },
+            ),
+          ],
+        ),
+        endDrawer: MenuDrawer(),
+        body: FileViewer(),
       ),
-      endDrawer: MenuDrawer(),
-      body: FileViewer(),
     );
   }
 }

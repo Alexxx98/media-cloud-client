@@ -31,7 +31,6 @@ class _CreateDirectoryFormState extends State<CreateDirectoryForm> {
         listener: (context, state) {
           if (state is FilesLoaded) {
             parentId = state.currentDirectoryId;
-            print(parentId);
           }
         },
         child: Container(
