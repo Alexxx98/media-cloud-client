@@ -1,4 +1,5 @@
 import 'package:client/business_logic/entities/file.dart';
+import 'package:file_picker/file_picker.dart';
 
 abstract class MediaCloudState {
   MediaCloudState();
@@ -38,6 +39,12 @@ class DirectoryCreated extends MediaCloudState {
   final FileEntity directory;
 
   DirectoryCreated(this.directory);
+}
+
+class FilesPicked extends MediaCloudState {
+  final List<PlatformFile> files;
+
+  FilesPicked(this.files);
 }
 
 class FilesUploaded extends MediaCloudState {

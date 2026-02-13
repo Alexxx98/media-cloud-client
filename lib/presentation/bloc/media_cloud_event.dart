@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:client/business_logic/entities/file.dart';
+import 'package:file_picker/file_picker.dart';
 
 abstract class MediaCloudEvent {
   MediaCloudEvent();
@@ -47,6 +48,12 @@ class CreateDirectoryEvent extends MediaCloudEvent {
   final FileEntity directory;
 
   CreateDirectoryEvent(this.directory);
+}
+
+class PickFilesEvent extends MediaCloudEvent {
+  final List<PlatformFile> files;
+
+  PickFilesEvent(this.files);
 }
 
 class UploadFilesEvent extends MediaCloudEvent {

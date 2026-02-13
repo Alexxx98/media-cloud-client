@@ -57,6 +57,7 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
     on<DownloadMultipleFilesEvent>(_onDownloadMultipleFiles);
     on<StreamFileEvent>(_onStreamFile);
     on<CreateDirectoryEvent>(_onCreateDirectory);
+    on<PickFilesEvent>(_onPickFiles);
     on<UploadFilesEvent>(_onUploadFiles);
     on<RenameDirectoryEvent>(_onRenameDirectory);
     on<RenameFileEvent>(_onRenameFile);
@@ -160,6 +161,13 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
     } else {
       emit(CloudError('Could not create the directory.'));
     }
+  }
+
+  Future<void> _onPickFiles(
+    PickFilesEvent event,
+    Emitter<MediaCloudState> emit,
+  ) async {
+    emit(FilesPicked(event.files));
   }
 
   Future<void> _onUploadFiles(
