@@ -74,7 +74,7 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
     emit(CloudLoading());
     final dataState = await getRootUseCase();
     if (dataState is DataSuccess) {
-      emit(FilesLoaded(null, null, dataState.data!));
+      emit(FilesLoaded(dataState.data!, null));
     } else {
       emit(CloudError('Could not load cloud root'));
     }
@@ -85,11 +85,9 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
     Emitter<MediaCloudState> emit,
   ) async {
     emit(CloudLoading());
-    final dataState = await getFileUseCase(event.directoryId);
+    final dataState = await getFileUseCase(event.directory.id!);
     if (dataState is DataSuccess) {
-      emit(
-        FilesLoaded(event.directoryId, event.directoryParentId, dataState.data),
-      );
+      emit(FilesLoaded(dataState.data, event.directory));
     } else {
       emit(CloudError("Could not load directory's files"));
     }
@@ -197,7 +195,7 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
       event.name,
       event.password,
     );
-    if (dataState is DataSuccess && dataState != null) {
+    if (dataState is DataSuccess) {
       emit(FileRenamed(dataState.data!));
     } else {
       emit(CloudError('Unable to rename the directory.'));
@@ -227,7 +225,7 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
       event.currentPassword,
       event.newPassword,
     );
-    if (dataState is DataSuccess && dataState != null) {
+    if (dataState is DataSuccess) {
       emit(PasswordChanged());
     } else {
       emit(CloudError('Unable to change the password.'));
@@ -256,7 +254,7 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
   ) async {
     emit(CloudLoading());
     final dataState = await removeFileUseCase(event.fileId);
-    if (dataState is DataState && dataState.data != null) {
+    if (dataState is DataSuccess && dataState.data != null) {
       emit(FileRemoved());
     }
   }

@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:client/business_logic/entities/file.dart';
 import 'package:client/presentation/bloc/media_cloud_bloc.dart';
 import 'package:client/presentation/bloc/media_cloud_event.dart';
 import 'package:client/presentation/bloc/media_cloud_state.dart';
@@ -10,8 +11,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UploadFilesForm extends StatefulWidget {
   final MediaCloudBloc bloc;
+  final FileEntity? currentDirectory;
 
-  const UploadFilesForm({super.key, required this.bloc});
+  const UploadFilesForm({super.key, required this.bloc, this.currentDirectory});
 
   @override
   State<UploadFilesForm> createState() => _UploadFilesFormState();
@@ -22,9 +24,13 @@ class _UploadFilesFormState extends State<UploadFilesForm> {
 
   final uploadedByController = TextEditingController();
 
+  late int? currentDirectoryId;
+
   @override
   Widget build(BuildContext context) {
-    int? parentId;
+    if (widget.currentDirectory != null) {
+      currentDirectoryId = widget.currentDirectory!.id;
+    }
 
     return Dialog(
       child: Container(
@@ -79,9 +85,6 @@ class _UploadFilesFormState extends State<UploadFilesForm> {
               BlocBuilder<MediaCloudBloc, MediaCloudState>(
                 bloc: widget.bloc,
                 builder: (context, state) {
-                  if (state is FilesLoaded) {
-                    parentId = state.currentDirectoryId;
-                  }
                   if (state is FilesPicked) {
                     return Column(
                       children: [
@@ -100,6 +103,14 @@ class _UploadFilesFormState extends State<UploadFilesForm> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStatePropertyAll<Color>(
+                                Colors.black,
+                              ),
+                              foregroundColor: WidgetStatePropertyAll<Color>(
+                                Colors.grey.shade700,
+                              ),
+                            ),
                             onPressed: () {
                               List<Uint8List> filesBytes = [];
 
@@ -112,7 +123,7 @@ class _UploadFilesFormState extends State<UploadFilesForm> {
                               }
                               widget.bloc.add(
                                 UploadFilesEvent(
-                                  parentId!,
+                                  currentDirectoryId!,
                                   filesBytes,
                                   uploadedByController.text,
                                 ),

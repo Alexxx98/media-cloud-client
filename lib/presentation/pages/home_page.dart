@@ -1,3 +1,4 @@
+import 'package:client/business_logic/entities/file.dart';
 import 'package:client/presentation/bloc/media_cloud_bloc.dart';
 import 'package:client/presentation/bloc/media_cloud_event.dart';
 import 'package:client/presentation/bloc/media_cloud_state.dart';
@@ -14,17 +15,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int? currentDirectoryId;
-  int? currentDirectoryParentId;
-
   @override
   Widget build(BuildContext context) {
+    FileEntity? currentDirectory;
+
     return BlocListener(
       bloc: context.read<MediaCloudBloc>(),
       listener: (context, state) {
         if (state is FilesLoaded) {
-          currentDirectoryId = state.currentDirectoryId;
-          currentDirectoryParentId = state.currentDirectoryParentId;
+          print(state.directory);
+          currentDirectory = state.directory;
         }
       },
       child: Scaffold(
@@ -32,14 +32,14 @@ class _HomePageState extends State<HomePage> {
           // Get previous directory files
           leading: IconButton(
             onPressed: () {
-              if (currentDirectoryParentId != null) {
-                context.read<MediaCloudBloc>().add(
-                  GetFilesEvent(
-                    currentDirectoryId!,
-                    currentDirectoryParentId,
-                    null,
-                  ),
-                );
+              if (currentDirectory != null) {
+                if (currentDirectory!.parentId != null) {
+                  context.read<MediaCloudBloc>().add(
+                    GetFilesEvent(currentDirectory!),
+                  );
+                } else {
+                  context.read<MediaCloudBloc>().add(GetRootEvent());
+                }
               } else {
                 context.read<MediaCloudBloc>().add(GetRootEvent());
               }
@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        endDrawer: MenuDrawer(),
+        endDrawer: MenuDrawer(currentDirectory: currentDirectory),
         body: FileViewer(),
       ),
     );

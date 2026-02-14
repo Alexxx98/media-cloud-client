@@ -1,4 +1,4 @@
-import 'package:client/business_logic/use_cases/upload_files.dart';
+import 'package:client/business_logic/entities/file.dart';
 import 'package:client/presentation/bloc/media_cloud_bloc.dart';
 import 'package:client/presentation/widgets/forms/create_directory_form.dart';
 import 'package:client/presentation/widgets/forms/upload_files_form.dart';
@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MenuDrawer extends StatelessWidget {
-  const MenuDrawer({super.key});
+  final FileEntity? currentDirectory;
+
+  const MenuDrawer({super.key, this.currentDirectory});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,10 @@ class MenuDrawer extends StatelessWidget {
                   showDialog(
                     context: context,
                     builder: (dialogContext) {
-                      return CreateDirectoryForm(bloc: bloc);
+                      return CreateDirectoryForm(
+                        bloc: bloc,
+                        currentDirectory: currentDirectory,
+                      );
                     },
                   );
                 },
@@ -49,7 +54,10 @@ class MenuDrawer extends StatelessWidget {
                   showDialog(
                     context: (context),
                     builder: (dialogContext) {
-                      return UploadFilesForm(bloc: bloc);
+                      return UploadFilesForm(
+                        bloc: bloc,
+                        currentDirectory: currentDirectory,
+                      );
                     },
                   );
                 },
