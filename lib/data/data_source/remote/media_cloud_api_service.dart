@@ -2,6 +2,7 @@
 
 import 'dart:typed_data';
 
+import 'package:client/data/models/previous_directory_response.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 
@@ -22,7 +23,13 @@ abstract class MediaCloudApiService {
 
   // Get files and directories of parent directory
   @GET('/directory/{directoryId}')
-  Future<List<FileModel>> getFiles(@Path('directoryId') int parentId);
+  Future<List<FileModel>> openDirectory(@Path('directoryId') int directoryId);
+
+  // Get files and directories of previous directory
+  @GET('/directory/{directoryId}/previous')
+  Future<PreviousDirectoryResponse> openPreviousDirectory(
+    @Path('directoryId') int directoryId,
+  );
 
   // Download single file
   @GET('/file/{fileId}/download')

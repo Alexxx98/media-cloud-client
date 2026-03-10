@@ -5,7 +5,7 @@ import 'package:client/business_logic/use_cases/delete_directory.dart';
 import 'package:client/business_logic/use_cases/download_directory.dart';
 import 'package:client/business_logic/use_cases/download_file.dart';
 import 'package:client/business_logic/use_cases/download_multiple_files.dart';
-import 'package:client/business_logic/use_cases/get_files.dart';
+import 'package:client/business_logic/use_cases/open_directory.dart';
 import 'package:client/business_logic/use_cases/get_root.dart';
 import 'package:client/business_logic/use_cases/remove_file.dart';
 import 'package:client/business_logic/use_cases/remove_multiple_files.dart';
@@ -33,7 +33,7 @@ Future<void> initializeDependencies() async {
 
   // Use Cases
   get_it.registerSingleton<GetRoot>(GetRoot(get_it()));
-  get_it.registerSingleton<GetFiles>(GetFiles(get_it()));
+  get_it.registerSingleton<OpenDirectory>(OpenDirectory(get_it()));
   get_it.registerSingleton<DownloadDirectory>(DownloadDirectory(get_it()));
   get_it.registerSingleton<DownloadFile>(DownloadFile(get_it()));
   get_it.registerSingleton<DownloadMultipleFiles>(

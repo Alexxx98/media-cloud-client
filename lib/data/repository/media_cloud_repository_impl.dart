@@ -33,7 +33,7 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
   @override
   Future<DataState<List<FileModel>>> getFiles(int parentId) async {
     try {
-      final response = await _apiService.getFiles(parentId);
+      final response = await _apiService.openDirectory(parentId);
       return DataSuccess(response);
     } on DioException catch (e) {
       return DataFailed(e);

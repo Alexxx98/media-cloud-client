@@ -4,11 +4,9 @@ import 'package:client/presentation/bloc/media_cloud_event.dart';
 import 'package:client/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   await initializeDependencies();
-  await dotenv.load(fileName: '.env');
   runApp(const MyApp());
 }
 
