@@ -19,11 +19,11 @@ class FileViewer extends StatelessWidget {
             if (state.currentDirectory == null) {
               mediaCloudBloc.add(GetRootEvent());
             } else {
-              mediaCloudBloc.add(GetFilesEvent(state.currentDirectory!));
+              mediaCloudBloc.add(OpenDirectoryEvent(state.currentDirectory!));
             }
           }
           if (state is FilesUploaded) {
-            mediaCloudBloc.add(GetFilesEvent(state.currentDirectory!));
+            mediaCloudBloc.add(OpenDirectoryEvent(state.currentDirectory!));
           }
           if (state is CloudError) {
             ScaffoldMessenger.of(

@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
               if (currentDirectory != null) {
                 if (currentDirectory!.parentId != null) {
                   context.read<MediaCloudBloc>().add(
-                    GetFilesEvent(currentDirectory!),
+                    OpenDirectoryEvent(currentDirectory!),
                   );
                 } else {
                   context.read<MediaCloudBloc>().add(GetRootEvent());

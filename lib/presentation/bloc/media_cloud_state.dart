@@ -2,16 +2,16 @@ import 'package:client/business_logic/entities/file.dart';
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
 
-enum FileExplorerStatus { loading, loadedFiles, pickedFiles, error }
+enum FileExplorerStatus { loading, success, filesPicked, error }
 
-class FileExplorerState extends Equatable {
+class MediaCloudState extends Equatable {
   final FileExplorerStatus status;
   final FileEntity? currentDirectory;
   final List<FileEntity>? loadedFiles;
   final List<PlatformFile>? pickedFiles;
   final String? errorMessage;
 
-  const FileExplorerState({
+  const MediaCloudState({
     this.status = FileExplorerStatus.loading,
     this.currentDirectory,
     this.loadedFiles,
@@ -19,16 +19,16 @@ class FileExplorerState extends Equatable {
     this.errorMessage,
   });
 
-  // copyWith method allows to store parameters data across multiple emitts
+  // copyWith method allows to store parameters data across multiple emits
   // The copyWIth name is just a convention, not built in flutter method to override
-  FileExplorerState copyWith({
+  MediaCloudState copyWith({
     FileEntity? currentDirectory,
     List<FileEntity>? loadedFiles,
     List<PlatformFile>? pickedFiles,
     bool? isLoading,
     String? errorMessage,
   }) {
-    return FileExplorerState(
+    return MediaCloudState(
       // If new parameter value is passed, use it, if not, keep the current one
       status: status,
       currentDirectory: currentDirectory ?? this.currentDirectory,

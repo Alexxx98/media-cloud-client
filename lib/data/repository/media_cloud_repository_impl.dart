@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -17,24 +16,21 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
   MediaCloudRepositoryImpl(this._apiService);
 
   // GET METHODS
-  // Get root
-  @override
-  Future<DataState<List<FileModel>>> getRoot() async {
-    try {
-      final response = await _apiService.getRoot();
-      return DataSuccess(response);
-    } on DioException catch (e) {
-      print(e);
-      return DataFailed(e);
-    }
-  }
-
   // Get files from directory
   @override
-  Future<DataState<List<FileModel>>> getFiles(int parentId) async {
+  Future<DataState<List<FileModel>>> openDirectory(
+    int? directoryId,
+    String? password,
+  ) async {
     try {
-      final response = await _apiService.openDirectory(parentId);
-      return DataSuccess(response);
+      if (directoryId != null) {
+        final passwordHeader = {'x-directory-password': password};
+        final response = await _apiService.openDirectory(
+          directoryId,
+          passwordHeader,
+        );
+        return DataSuccess(response);
+      }
     } on DioException catch (e) {
       return DataFailed(e);
     }
@@ -105,7 +101,6 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
       final response = await _apiService.createDirectory(body);
       return DataSuccess(response);
     } on DioException catch (e) {
-      print(e);
       return DataFailed(e);
     }
   }

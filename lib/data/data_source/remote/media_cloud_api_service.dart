@@ -23,11 +23,14 @@ abstract class MediaCloudApiService {
 
   // Get files and directories of parent directory
   @GET('/directory/{directoryId}')
-  Future<List<FileModel>> openDirectory(@Path('directoryId') int directoryId);
+  Future<List<FileModel>> openDirectory(
+    @Path('directoryId') int directoryId,
+    @Header('x=directory-password') Map<String, String?> passwordHeader,
+  );
 
   // Get files and directories of previous directory
   @GET('/directory/{directoryId}/previous')
-  Future<PreviousDirectoryResponse> openPreviousDirectory(
+  Future<PreviousDirectoryResponseModel> openPreviousDirectory(
     @Path('directoryId') int directoryId,
   );
 
@@ -64,7 +67,7 @@ abstract class MediaCloudApiService {
   @PATCH('/directory/{directoryId}/rename')
   Future<FileModel> renameDirectory(
     @Path('directoryId') int directoryId,
-    @Header('x-directory-password') Map<String, String?>? passwordHeader,
+    @Header('x-directory-password') Map<String, String?> passwordHeader,
     @Body() Map<String, String> body,
   );
 

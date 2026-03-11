@@ -42,7 +42,7 @@ class FileRepresentation extends StatelessWidget {
                   },
                 );
               }
-              mediaCloudBloc.add(GetFilesEvent(file));
+              mediaCloudBloc.add(OpenDirectoryEvent(file));
             },
           ),
           Text(file.name, style: TextStyle(fontWeight: FontWeight.bold)),

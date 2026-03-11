@@ -6,7 +6,7 @@ import 'package:client/business_logic/use_cases/download_directory.dart';
 import 'package:client/business_logic/use_cases/download_file.dart';
 import 'package:client/business_logic/use_cases/download_multiple_files.dart';
 import 'package:client/business_logic/use_cases/open_directory.dart';
-import 'package:client/business_logic/use_cases/get_root.dart';
+import 'package:client/business_logic/use_cases/open_previous_directory.dart';
 import 'package:client/business_logic/use_cases/remove_file.dart';
 import 'package:client/business_logic/use_cases/remove_multiple_files.dart';
 import 'package:client/business_logic/use_cases/rename_directory.dart';
@@ -32,8 +32,10 @@ Future<void> initializeDependencies() async {
   );
 
   // Use Cases
-  get_it.registerSingleton<GetRoot>(GetRoot(get_it()));
   get_it.registerSingleton<OpenDirectory>(OpenDirectory(get_it()));
+  get_it.registerSingleton<OpenPreviousDirectory>(
+    OpenPreviousDirectory(get_it()),
+  );
   get_it.registerSingleton<DownloadDirectory>(DownloadDirectory(get_it()));
   get_it.registerSingleton<DownloadFile>(DownloadFile(get_it()));
   get_it.registerSingleton<DownloadMultipleFiles>(
@@ -52,8 +54,8 @@ Future<void> initializeDependencies() async {
   // Blocs
   get_it.registerFactory<MediaCloudBloc>(
     () => MediaCloudBloc(
-      getRootUseCase: get_it(),
-      getFileUseCase: get_it(),
+      openDirectoryUseCase: get_it(),
+      openPreviousDirectoryUseCase: get_it(),
       downloadDirectoryUseCase: get_it(),
       downloadFileUseCase: get_it(),
       downloadMultipleFilesUseCase: get_it(),

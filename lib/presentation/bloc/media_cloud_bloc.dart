@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:client/business_logic/use_cases/open_directory.dart';
+import 'package:client/business_logic/use_cases/open_previous_directory.dart';
 import 'package:client/business_logic/use_cases/remove_multiple_files.dart';
 import 'package:client/core/data_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,17 +15,15 @@ import 'package:client/business_logic/use_cases/delete_directory.dart';
 import 'package:client/business_logic/use_cases/download_directory.dart';
 import 'package:client/business_logic/use_cases/download_file.dart';
 import 'package:client/business_logic/use_cases/download_multiple_files.dart';
-import 'package:client/business_logic/use_cases/open_directory.dart';
-import 'package:client/business_logic/use_cases/get_root.dart';
 import 'package:client/business_logic/use_cases/remove_file.dart';
 import 'package:client/business_logic/use_cases/rename_directory.dart';
 import 'package:client/business_logic/use_cases/rename_file.dart';
 import 'package:client/business_logic/use_cases/stream_file.dart';
 import 'package:client/business_logic/use_cases/upload_files.dart';
 
-class MediaCloudBloc extends Bloc<MediaCloudEvent, FileExplorerState> {
-  final GetRoot getRootUseCase;
-  final OpenDirectory getFileUseCase;
+class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
+  final OpenDirectory openDirectoryUseCase;
+  final OpenPreviousDirectory openPreviousDirectoryUseCase;
   final DownloadDirectory downloadDirectoryUseCase;
   final DownloadFile downloadFileUseCase;
   final DownloadMultipleFiles downloadMultipleFilesUseCase;
@@ -37,8 +37,8 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, FileExplorerState> {
   final RemoveFile removeFileUseCase;
   final RemoveMultipleFiles removeMultipleFilesUseCase;
   MediaCloudBloc({
-    required this.getRootUseCase,
-    required this.getFileUseCase,
+    required this.openDirectoryUseCase,
+    required this.openPreviousDirectoryUseCase,
     required this.downloadDirectoryUseCase,
     required this.downloadFileUseCase,
     required this.downloadMultipleFilesUseCase,
@@ -51,85 +51,158 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, FileExplorerState> {
     required this.deleteDirectoryUseCase,
     required this.removeFileUseCase,
     required this.removeMultipleFilesUseCase,
-  }) : super(FileExplorerState()) {
-    on<GetRootEvent>(_onRootLoaded);
-    on<GetFilesEvent>(_onFilesLoaded);
+  }) : super(MediaCloudState()) {
+    on<GetRootEvent>(_onGetRoot);
+    on<OpenDirectoryEvent>(_onOpenDirectory);
+    on<OpenPreviousDirectoryEvent>(_onOpenPreviousDirectory);
     on<CreateDirectoryEvent>(_onCreateDirectory);
-    on<PickFilesEvent>(_onFilesPicked);
-    on<CreateDirectoryEvent>(_onCreateDirectory);
+    on<UploadFilesEvent>(_onUploadFiles);
   }
 
-  Future<void> _onRootLoaded(
+  // On get root files event
+  Future<void> _onGetRoot(
     GetRootEvent event,
-    Emitter<FileExplorerState> emit,
+    Emitter<MediaCloudState> emit,
   ) async {
-    final currentDirectory = state.currentDirectory;
     emit(
-      FileExplorerState(currentDirectory: currentDirectory, isLoading: true),
+      MediaCloudState(
+        status: FileExplorerStatus.loading,
+        errorMessage: null,
+        pickedFiles: null,
+      ),
     );
-    final dataState = await getRootUseCase();
-    if (dataState is DataSuccess) {
-      emit(FileExplorerState(loadedFiles: dataState.data, isLoading: false));
-    } else {
-      emit(ErrorState('Unable to load root files'));
-    }
-  }
-
-  Future<void> _onFilesLoaded(
-    GetFilesEvent event,
-    Emitter<FileExplorerState> emit,
-  ) async {
-    emit(FileExplorerState(isLoading: true));
-    final dataState = await getFileUseCase(event.directory.id!);
+    final dataState = await openDirectoryUseCase(null, null);
     if (dataState is DataSuccess) {
       emit(
-        FileExplorerState(
-          currentDirectory: event.directory,
-          loadedFiles: dataState.data,
-          isLoading: false,
+        MediaCloudState(
+          status: FileExplorerStatus.success,
+          currentDirectory: null,
         ),
       );
     } else {
-      emit(ErrorState('Cannot fetch the directory files data'));
+      emit(
+        MediaCloudState(
+          status: FileExplorerStatus.error,
+          errorMessage: 'Unable to load the root directory',
+        ),
+      );
+    }
+  }
+
+  // On open directory event
+  Future<void> _onOpenDirectory(
+    OpenDirectoryEvent event,
+    Emitter<MediaCloudState> emit,
+  ) async {
+    emit(
+      MediaCloudState(
+        status: FileExplorerStatus.loading,
+        errorMessage: null,
+        pickedFiles: null,
+      ),
+    );
+    final dataState = await openDirectoryUseCase(
+      event.directory.id,
+      event.directory.password,
+    );
+    if (dataState is DataSuccess) {
+      emit(
+        MediaCloudState(
+          status: FileExplorerStatus.success,
+          currentDirectory: event.directory,
+        ),
+      );
+    } else {
+      emit(
+        MediaCloudState(
+          status: FileExplorerStatus.error,
+          errorMessage: 'Cannot open the directory',
+        ),
+      );
+    }
+  }
+
+  // On open previous directory event
+  Future<void> _onOpenPreviousDirectory(
+    OpenPreviousDirectoryEvent event,
+    Emitter<MediaCloudState> emit,
+  ) async {
+    emit(
+      MediaCloudState(
+        status: FileExplorerStatus.loading,
+        pickedFiles: null,
+        errorMessage: null,
+      ),
+    );
+    final dataState = await openPreviousDirectoryUseCase(
+      event.currentDirectoryId,
+    );
+    if (dataState is DataSuccess && dataState.data != null) {
+      emit(
+        MediaCloudState(
+          status: FileExplorerStatus.success,
+          currentDirectory: dataState.data!.directory,
+        ),
+      );
+    } else {
+      emit(
+        MediaCloudState(
+          status: FileExplorerStatus.error,
+          errorMessage: 'Unable to load the previous directory',
+        ),
+      );
     }
   }
 
   Future<void> _onCreateDirectory(
     CreateDirectoryEvent event,
-    Emitter<FileExplorerState> emit,
+    Emitter<MediaCloudState> emit,
   ) async {
-    final currentDirectory = state.currentDirectory;
-    final loadedFiles = state.loadedFiles;
     emit(
-      FileExplorerState(
-        currentDirectory: currentDirectory,
-        loadedFiles: loadedFiles,
-        isLoading: true,
+      MediaCloudState(
+        status: FileExplorerStatus.loading,
+        errorMessage: null,
+        pickedFiles: null,
       ),
     );
     final dataState = await createDirectoryUseCase(event.directory);
-    if (dataState is DataSuccess && dataState.data != null) {
+    if (dataState is DataSuccess) {
+      emit(MediaCloudState(status: FileExplorerStatus.success));
+    } else {
       emit(
-        FileExplorerState(
-          currentDirectory: currentDirectory,
-          loadedFiles: loadedFiles,
-          isLoading: false,
+        MediaCloudState(
+          status: FileExplorerStatus.error,
+          errorMessage: 'Could not create a new directory.',
         ),
       );
-    } else {
-      emit(ErrorState('Cannot create a new directory'));
     }
   }
 
-  void _onFilesPicked(PickFilesEvent event, Emitter<FileExplorerState> emit) {
-    final currentDirectory = state.currentDirectory;
-    final loadedFiles = state.loadedFiles;
+  Future<void> _onUploadFiles(
+    UploadFilesEvent event,
+    Emitter<MediaCloudState> emit,
+  ) async {
     emit(
-      FileExplorerState(
-        currentDirectory: currentDirectory,
-        loadedFiles: loadedFiles,
-        pickedFiles: event.files,
+      MediaCloudState(
+        status: FileExplorerStatus.loading,
+        errorMessage: null,
+        pickedFiles: null,
       ),
     );
+    final dataState = await uploadFilesUseCase(
+      event.directoryId,
+      event.files,
+      event.uploadedBy,
+    );
+    if (dataState is DataSuccess) {
+      emit(MediaCloudState(status: FileExplorerStatus.success));
+    } else {
+      emit(
+        MediaCloudState(
+          status: FileExplorerStatus.error,
+          errorMessage: 'Unable to upload your files',
+        ),
+      );
+    }
   }
 }

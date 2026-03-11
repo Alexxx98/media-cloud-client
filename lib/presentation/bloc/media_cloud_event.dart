@@ -11,10 +11,16 @@ class GetRootEvent extends MediaCloudEvent {
   GetRootEvent();
 }
 
-class GetFilesEvent extends MediaCloudEvent {
+class OpenDirectoryEvent extends MediaCloudEvent {
   final FileEntity directory;
 
-  GetFilesEvent(this.directory);
+  OpenDirectoryEvent(this.directory);
+}
+
+class OpenPreviousDirectoryEvent extends MediaCloudEvent {
+  final int currentDirectoryId;
+
+  OpenPreviousDirectoryEvent(this.currentDirectoryId);
 }
 
 class DownloadDirectoryEvent extends MediaCloudEvent {
