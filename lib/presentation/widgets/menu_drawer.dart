@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MenuDrawer extends StatelessWidget {
-  final FileEntity? currentDirectory;
-
-  const MenuDrawer({super.key, this.currentDirectory});
+  const MenuDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +24,7 @@ class MenuDrawer extends StatelessWidget {
                   showDialog(
                     context: context,
                     builder: (dialogContext) {
-                      return CreateDirectoryForm(
-                        bloc: bloc,
-                        currentDirectory: currentDirectory,
-                      );
+                      return CreateDirectoryForm(bloc: bloc);
                     },
                   );
                 },
@@ -54,10 +49,7 @@ class MenuDrawer extends StatelessWidget {
                   showDialog(
                     context: (context),
                     builder: (dialogContext) {
-                      return UploadFilesForm(
-                        bloc: bloc,
-                        currentDirectory: currentDirectory,
-                      );
+                      return UploadFilesForm(bloc: bloc);
                     },
                   );
                 },

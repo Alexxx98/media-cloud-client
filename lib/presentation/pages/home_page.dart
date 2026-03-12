@@ -17,56 +17,29 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    FileEntity? currentDirectory;
-
-    return BlocListener(
-      bloc: context.read<MediaCloudBloc>(),
-      listener: (context, state) {
-        if (state is FilesLoaded) {
-          print(state.directory);
-          currentDirectory = state.directory;
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          // Get previous directory files
-          leading: IconButton(
-            onPressed: () {
-              if (currentDirectory != null) {
-                if (currentDirectory!.parentId != null) {
-                  context.read<MediaCloudBloc>().add(
-                    OpenDirectoryEvent(currentDirectory!),
-                  );
-                } else {
-                  context.read<MediaCloudBloc>().add(GetRootEvent());
-                }
-              } else {
-                context.read<MediaCloudBloc>().add(GetRootEvent());
-              }
-            },
-            icon: Icon(Icons.arrow_back),
-          ),
-          title: Text(
-            'Cloud.Home',
-            style: TextStyle(color: Colors.grey.shade300),
-          ),
-          backgroundColor: Colors.black,
-          actions: [
-            Builder(
-              builder: (context) {
-                return IconButton(
-                  onPressed: () {
-                    Scaffold.of(context).openEndDrawer();
-                  },
-                  icon: Icon(Icons.more_vert, color: Colors.grey.shade300),
-                );
-              },
-            ),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        // Get previous directory files
+        title: Text(
+          'Cloud.Home',
+          style: TextStyle(color: Colors.grey.shade300),
         ),
-        endDrawer: MenuDrawer(currentDirectory: currentDirectory),
-        body: FileViewer(),
+        backgroundColor: Colors.black,
+        actions: [
+          Builder(
+            builder: (context) {
+              return IconButton(
+                onPressed: () {
+                  Scaffold.of(context).openEndDrawer();
+                },
+                icon: Icon(Icons.more_vert, color: Colors.grey.shade300),
+              );
+            },
+          ),
+        ],
       ),
+      endDrawer: MenuDrawer(),
+      body: FileViewer(),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:client/data/models/previous_directory_response.dart';
 import 'package:dio/dio.dart';
 
 import 'package:client/business_logic/entities/file.dart';
@@ -30,7 +31,22 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
           passwordHeader,
         );
         return DataSuccess(response);
+      } else {
+        final response = await _apiService.getRoot();
+        return DataSuccess(response);
       }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<PreviousDirectoryResponseModel>> openPreviousDirectory(
+    int directoryId,
+  ) async {
+    try {
+      final response = await _apiService.openPreviousDirectory(directoryId);
+      return DataSuccess(response);
     } on DioException catch (e) {
       return DataFailed(e);
     }

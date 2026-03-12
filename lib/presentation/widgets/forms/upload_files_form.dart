@@ -33,115 +33,122 @@ class _UploadFilesFormState extends State<UploadFilesForm> {
     }
 
     return Dialog(
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: Colors.grey.shade700,
-        ),
-        constraints: BoxConstraints(maxWidth: 750),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+      child: BlocBuilder<MediaCloudBloc, MediaCloudState>(
+        bloc: widget.bloc,
+        builder: (context, state) {
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.grey.shade700,
+            ),
+            constraints: BoxConstraints(maxWidth: 750),
+            child: Form(
+              key: _formKey,
+              child: Column(
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ),
+                    ],
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
+                    child: Text('Upload Files', style: TextStyle(fontSize: 32)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll<Color>(
+                          Colors.black,
+                        ),
+                        foregroundColor: WidgetStatePropertyAll<Color>(
+                          Colors.grey.shade700,
+                        ),
+                      ),
+                      onPressed: () async {
+                        final result = await FilePicker.platform.pickFiles();
+                        if (result == null) return;
+
+                        widget.bloc.add(PickFilesEvent(result.files));
+                      },
+
+                      child: Text('Pick Files'),
                     ),
+                  ),
+
+                  // Show picked files
+                  BlocBuilder<MediaCloudBloc, MediaCloudState>(
+                    bloc: widget.bloc,
+                    builder: (context, state) {
+                      if (state is FilesPicked) {
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(state.files.first.name),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CustomTextFormField(
+                                textController: uploadedByController,
+                                hintText: 'Uploaded by',
+                              ),
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      WidgetStatePropertyAll<Color>(
+                                        Colors.black,
+                                      ),
+                                  foregroundColor:
+                                      WidgetStatePropertyAll<Color>(
+                                        Colors.grey.shade700,
+                                      ),
+                                ),
+                                onPressed: () {
+                                  List<Uint8List> filesBytes = [];
+
+                                  for (
+                                    int index = 0;
+                                    index < state.files.length;
+                                    index++
+                                  ) {
+                                    filesBytes.add(state.files[index].bytes!);
+                                  }
+                                  widget.bloc.add(
+                                    UploadFilesEvent(
+                                      currentDirectoryId!,
+                                      filesBytes,
+                                      uploadedByController.text,
+                                    ),
+                                  );
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Upload files'),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      return SizedBox();
+                    },
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('Upload Files', style: TextStyle(fontSize: 32)),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll<Color>(
-                      Colors.black,
-                    ),
-                    foregroundColor: WidgetStatePropertyAll<Color>(
-                      Colors.grey.shade700,
-                    ),
-                  ),
-                  onPressed: () async {
-                    final result = await FilePicker.platform.pickFiles();
-                    if (result == null) return;
-
-                    widget.bloc.add(PickFilesEvent(result.files));
-                  },
-
-                  child: Text('Pick Files'),
-                ),
-              ),
-
-              // Show picked files
-              BlocBuilder<MediaCloudBloc, MediaCloudState>(
-                bloc: widget.bloc,
-                builder: (context, state) {
-                  if (state is FilesPicked) {
-                    return Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(state.files.first.name),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CustomTextFormField(
-                            textController: uploadedByController,
-                            hintText: 'Uploaded by',
-                          ),
-                        ),
-
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll<Color>(
-                                Colors.black,
-                              ),
-                              foregroundColor: WidgetStatePropertyAll<Color>(
-                                Colors.grey.shade700,
-                              ),
-                            ),
-                            onPressed: () {
-                              List<Uint8List> filesBytes = [];
-
-                              for (
-                                int index = 0;
-                                index < state.files.length;
-                                index++
-                              ) {
-                                filesBytes.add(state.files[index].bytes!);
-                              }
-                              widget.bloc.add(
-                                UploadFilesEvent(
-                                  currentDirectoryId!,
-                                  filesBytes,
-                                  uploadedByController.text,
-                                ),
-                              );
-                              Navigator.pop(context);
-                            },
-                            child: Text('Upload files'),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                  return SizedBox();
-                },
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
