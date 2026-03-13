@@ -22,7 +22,8 @@ class MyApp extends StatelessWidget {
         providers: [
           // '..' is the cascade operator, in this case it adds event immediately
           BlocProvider(
-            create: (context) => get_it<MediaCloudBloc>()..add(GetRootEvent()),
+            create: (context) =>
+                get_it<MediaCloudBloc>()..add(OpenDirectoryEvent(null)),
           ),
         ],
         child: const HomePage(),

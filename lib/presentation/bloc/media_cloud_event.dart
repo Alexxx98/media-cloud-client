@@ -7,12 +7,8 @@ abstract class MediaCloudEvent {
   MediaCloudEvent();
 }
 
-class GetRootEvent extends MediaCloudEvent {
-  GetRootEvent();
-}
-
 class OpenDirectoryEvent extends MediaCloudEvent {
-  final FileEntity directory;
+  final FileEntity? directory;
 
   OpenDirectoryEvent(this.directory);
 }

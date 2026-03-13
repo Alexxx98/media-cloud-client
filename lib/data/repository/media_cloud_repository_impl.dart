@@ -36,6 +36,7 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
         return DataSuccess(response);
       }
     } on DioException catch (e) {
+      print(e);
       return DataFailed(e);
     }
   }

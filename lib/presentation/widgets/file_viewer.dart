@@ -10,45 +10,37 @@ class FileViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MediaCloudBloc mediaCloudBloc = context.read<MediaCloudBloc>();
     return Scaffold(
       backgroundColor: Colors.grey.shade600,
-      body: BlocConsumer<MediaCloudBloc, MediaCloudState>(
-        listener: (context, state) {
-          if (state is DirectoryCreated) {
-            if (state.currentDirectory == null) {
-              mediaCloudBloc.add(GetRootEvent());
-            } else {
-              mediaCloudBloc.add(OpenDirectoryEvent(state.currentDirectory!));
-            }
-          }
-          if (state is FilesUploaded) {
-            mediaCloudBloc.add(OpenDirectoryEvent(state.currentDirectory!));
-          }
-          if (state is CloudError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
-          }
-        },
+      body: BlocBuilder<MediaCloudBloc, MediaCloudState>(
         builder: (context, state) {
-          if (state is FilesLoaded && state.files != null) {
-            return GridView.builder(
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 150,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-              ),
-              itemCount: state.files!.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: FileRepresentation(file: state.files![index]),
+          switch (state.status) {
+            case FileExplorerStatus.loading:
+              return CircularProgressIndicator();
+            case FileExplorerStatus.success:
+              if (state.loadedFiles != null) {
+                return GridView.builder(
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 150,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                  ),
+                  itemCount: state.loadedFiles!.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: FileRepresentation(
+                        file: state.loadedFiles![index],
+                      ),
+                    );
+                  },
                 );
-              },
-            );
+              } else {
+                return SizedBox();
+              }
+            case FileExplorerStatus.error:
+              return SizedBox(child: Text(state.errorMessage!));
           }
-          return SizedBox();
         },
       ),
     );

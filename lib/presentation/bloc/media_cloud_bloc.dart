@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:client/business_logic/entities/file.dart';
 import 'package:client/business_logic/use_cases/open_directory.dart';
 import 'package:client/business_logic/use_cases/open_previous_directory.dart';
 import 'package:client/business_logic/use_cases/remove_multiple_files.dart';
@@ -52,41 +53,10 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
     required this.removeFileUseCase,
     required this.removeMultipleFilesUseCase,
   }) : super(MediaCloudState()) {
-    on<GetRootEvent>(_onGetRoot);
     on<OpenDirectoryEvent>(_onOpenDirectory);
     on<OpenPreviousDirectoryEvent>(_onOpenPreviousDirectory);
     on<CreateDirectoryEvent>(_onCreateDirectory);
     on<UploadFilesEvent>(_onUploadFiles);
-  }
-
-  // On get root files event
-  Future<void> _onGetRoot(
-    GetRootEvent event,
-    Emitter<MediaCloudState> emit,
-  ) async {
-    emit(
-      MediaCloudState(
-        status: FileExplorerStatus.loading,
-        errorMessage: null,
-        pickedFiles: null,
-      ),
-    );
-    final dataState = await openDirectoryUseCase(null, null);
-    if (dataState is DataSuccess) {
-      emit(
-        MediaCloudState(
-          status: FileExplorerStatus.success,
-          currentDirectory: null,
-        ),
-      );
-    } else {
-      emit(
-        MediaCloudState(
-          status: FileExplorerStatus.error,
-          errorMessage: 'Unable to load the root directory',
-        ),
-      );
-    }
   }
 
   // On open directory event
@@ -101,10 +71,15 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
         pickedFiles: null,
       ),
     );
-    final dataState = await openDirectoryUseCase(
-      event.directory.id,
-      event.directory.password,
-    );
+    DataState<List<FileEntity>> dataState;
+    if (event.directory == null) {
+      dataState = await openDirectoryUseCase(null, null);
+    } else {
+      dataState = await openDirectoryUseCase(
+        event.directory!.id,
+        event.directory!.password,
+      );
+    }
     if (dataState is DataSuccess) {
       emit(
         MediaCloudState(
@@ -116,7 +91,7 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
       emit(
         MediaCloudState(
           status: FileExplorerStatus.error,
-          errorMessage: 'Cannot open the directory',
+          errorMessage: 'Cannot fetch the directory data',
         ),
       );
     }
@@ -167,7 +142,7 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
     );
     final dataState = await createDirectoryUseCase(event.directory);
     if (dataState is DataSuccess) {
-      emit(MediaCloudState(status: FileExplorerStatus.success));
+      add(OpenDirectoryEvent(state.currentDirectory));
     } else {
       emit(
         MediaCloudState(

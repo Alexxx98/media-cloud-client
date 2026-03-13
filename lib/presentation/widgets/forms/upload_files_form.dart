@@ -11,9 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UploadFilesForm extends StatefulWidget {
   final MediaCloudBloc bloc;
-  final FileEntity? currentDirectory;
 
-  const UploadFilesForm({super.key, required this.bloc, this.currentDirectory});
+  const UploadFilesForm({super.key, required this.bloc});
 
   @override
   State<UploadFilesForm> createState() => _UploadFilesFormState();
@@ -28,10 +27,6 @@ class _UploadFilesFormState extends State<UploadFilesForm> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.currentDirectory != null) {
-      currentDirectoryId = widget.currentDirectory!.id;
-    }
-
     return Dialog(
       child: BlocBuilder<MediaCloudBloc, MediaCloudState>(
         bloc: widget.bloc,
@@ -88,60 +83,70 @@ class _UploadFilesFormState extends State<UploadFilesForm> {
                   BlocBuilder<MediaCloudBloc, MediaCloudState>(
                     bloc: widget.bloc,
                     builder: (context, state) {
-                      if (state is FilesPicked) {
-                        return Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(state.files.first.name),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: CustomTextFormField(
-                                textController: uploadedByController,
-                                hintText: 'Uploaded by',
-                              ),
-                            ),
-
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      WidgetStatePropertyAll<Color>(
-                                        Colors.black,
-                                      ),
-                                  foregroundColor:
-                                      WidgetStatePropertyAll<Color>(
-                                        Colors.grey.shade700,
-                                      ),
+                      switch (state.status) {
+                        case FileExplorerStatus.loading:
+                          return CircularProgressIndicator();
+                        case FileExplorerStatus.success:
+                          if (state.pickedFiles != null) {
+                            return Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(state.pickedFiles!.first.name),
                                 ),
-                                onPressed: () {
-                                  List<Uint8List> filesBytes = [];
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CustomTextFormField(
+                                    textController: uploadedByController,
+                                    hintText: 'Uploaded by',
+                                  ),
+                                ),
 
-                                  for (
-                                    int index = 0;
-                                    index < state.files.length;
-                                    index++
-                                  ) {
-                                    filesBytes.add(state.files[index].bytes!);
-                                  }
-                                  widget.bloc.add(
-                                    UploadFilesEvent(
-                                      currentDirectoryId!,
-                                      filesBytes,
-                                      uploadedByController.text,
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          WidgetStatePropertyAll<Color>(
+                                            Colors.black,
+                                          ),
+                                      foregroundColor:
+                                          WidgetStatePropertyAll<Color>(
+                                            Colors.grey.shade700,
+                                          ),
                                     ),
-                                  );
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Upload files'),
-                              ),
-                            ),
-                          ],
-                        );
+                                    onPressed: () {
+                                      List<Uint8List> filesBytes = [];
+
+                                      for (
+                                        int index = 0;
+                                        index < state.pickedFiles!.length;
+                                        index++
+                                      ) {
+                                        filesBytes.add(
+                                          state.pickedFiles![index].bytes!,
+                                        );
+                                      }
+                                      widget.bloc.add(
+                                        UploadFilesEvent(
+                                          currentDirectoryId!,
+                                          filesBytes,
+                                          uploadedByController.text,
+                                        ),
+                                      );
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Upload files'),
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else {
+                            return SizedBox();
+                          }
+                        case FileExplorerStatus.error:
+                          return SizedBox();
                       }
-                      return SizedBox();
                     },
                   ),
                 ],

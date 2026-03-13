@@ -2,7 +2,7 @@ import 'package:client/business_logic/entities/file.dart';
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
 
-enum FileExplorerStatus { loading, success, filesPicked, error }
+enum FileExplorerStatus { loading, success, error }
 
 class MediaCloudState extends Equatable {
   final FileExplorerStatus status;
