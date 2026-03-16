@@ -1,5 +1,4 @@
 import 'package:client/business_logic/entities/file.dart';
-import 'package:logger/logger.dart';
 
 class FileModel extends FileEntity {
   const FileModel({

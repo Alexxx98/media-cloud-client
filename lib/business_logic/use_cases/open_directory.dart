@@ -7,14 +7,11 @@ class OpenDirectory {
 
   OpenDirectory(this._mediaCloudRepository);
 
-  Future<DataState<List<FileEntity>>> call(
-    int? parentId,
-    String? password,
-  ) async {
+  Future<DataState<List<FileEntity>>> call(int? parentId) async {
     if (parentId != null) {
-      return await _mediaCloudRepository.openDirectory(parentId, password);
+      return await _mediaCloudRepository.openDirectory(parentId);
     } else {
-      return await _mediaCloudRepository.openDirectory(null, null);
+      return await _mediaCloudRepository.openDirectory(null);
     }
   }
 }

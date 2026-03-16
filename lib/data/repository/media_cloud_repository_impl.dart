@@ -19,24 +19,18 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
   // GET METHODS
   // Get files from directory
   @override
-  Future<DataState<List<FileModel>>> openDirectory(
-    int? directoryId,
-    String? password,
-  ) async {
+  Future<DataState<List<FileModel>>> openDirectory(int? directoryId) async {
     try {
       if (directoryId != null) {
-        final passwordHeader = {'x-directory-password': password};
-        final response = await _apiService.openDirectory(
-          directoryId,
-          passwordHeader,
-        );
+        print(directoryId);
+        final response = await _apiService.openDirectory(directoryId);
         return DataSuccess(response);
       } else {
         final response = await _apiService.getRoot();
         return DataSuccess(response);
       }
     } on DioException catch (e) {
-      print(e);
+      print(e.response);
       return DataFailed(e);
     }
   }

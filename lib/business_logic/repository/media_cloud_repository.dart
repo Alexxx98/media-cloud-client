@@ -3,14 +3,10 @@ import 'dart:typed_data';
 import 'package:client/business_logic/entities/file.dart';
 import 'package:client/business_logic/entities/previous_directory_response.dart';
 import 'package:client/core/data_state.dart';
-import 'package:client/data/models/previous_directory_response.dart';
 
 abstract class MediaCloudRepository {
   // Get methods
-  Future<DataState<List<FileEntity>>> openDirectory(
-    int? directoryId,
-    String? password,
-  );
+  Future<DataState<List<FileEntity>>> openDirectory(int? directoryId);
   Future<DataState<PreviousDirectoryResponseEntity>> openPreviousDirectory(
     int directoryId,
   );

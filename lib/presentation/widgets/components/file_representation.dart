@@ -34,14 +34,6 @@ class FileRepresentation extends StatelessWidget {
             color: Colors.blueGrey.shade900,
             iconSize: 75,
             onPressed: () {
-              if (file.password != null) {
-                showDialog(
-                  context: context,
-                  builder: (dialogContext) {
-                    return Dialog(child: Container(child: TextField()));
-                  },
-                );
-              }
               mediaCloudBloc.add(OpenDirectoryEvent(file));
             },
           ),

@@ -24,6 +24,8 @@ class _CreateDirectoryFormState extends State<CreateDirectoryForm> {
 
   @override
   Widget build(BuildContext context) {
+    int? currentDirectoryId;
+
     return Dialog(
       child: BlocBuilder<MediaCloudBloc, MediaCloudState>(
         bloc: widget.bloc,
@@ -32,6 +34,9 @@ class _CreateDirectoryFormState extends State<CreateDirectoryForm> {
             case FileExplorerStatus.loading:
               return CircularProgressIndicator();
             case FileExplorerStatus.success:
+              if (state.currentDirectory != null) {
+                currentDirectoryId = state.currentDirectory!.id;
+              }
               return Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
@@ -98,7 +103,7 @@ class _CreateDirectoryFormState extends State<CreateDirectoryForm> {
                             onPressed: () {
                               FileEntity newDirectory = FileEntity(
                                 name: nameController.text,
-                                parentId: state.currentDirectory!.id,
+                                parentId: currentDirectoryId,
                                 password: passwordController.text,
                                 addedBy: creatorController.text,
                               );

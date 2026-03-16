@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:client/business_logic/entities/file.dart';
 import 'package:client/presentation/bloc/media_cloud_bloc.dart';
 import 'package:client/presentation/bloc/media_cloud_event.dart';
 import 'package:client/presentation/bloc/media_cloud_state.dart';

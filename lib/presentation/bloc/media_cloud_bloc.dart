@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:client/business_logic/entities/file.dart';
 import 'package:client/business_logic/use_cases/open_directory.dart';
 import 'package:client/business_logic/use_cases/open_previous_directory.dart';
@@ -72,18 +70,16 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
       ),
     );
     DataState<List<FileEntity>> dataState;
-    if (event.directory == null) {
-      dataState = await openDirectoryUseCase(null, null);
+    if (event.directory != null) {
+      dataState = await openDirectoryUseCase(event.directory!.id);
     } else {
-      dataState = await openDirectoryUseCase(
-        event.directory!.id,
-        event.directory!.password,
-      );
+      dataState = await openDirectoryUseCase(null);
     }
     if (dataState is DataSuccess) {
       emit(
         MediaCloudState(
           status: FileExplorerStatus.success,
+          loadedFiles: dataState.data,
           currentDirectory: event.directory,
         ),
       );
