@@ -20,9 +20,9 @@ class FileRepresentation extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.file_open),
             color: Colors.blueGrey.shade900,
+            iconSize: 75,
             onPressed: () => mediaCloudBloc.add(StreamFileEvent(file.id!)),
           ),
-          Text(file.name),
         ],
       );
     } else {

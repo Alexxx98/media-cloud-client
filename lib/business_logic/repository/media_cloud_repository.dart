@@ -22,7 +22,8 @@ abstract class MediaCloudRepository {
   Future<DataState<FileEntity>> createDirectory(FileEntity directory);
   Future<DataState<List<FileEntity>>> uploadFiles(
     int directoryId,
-    List<Uint8List> files,
+    List<String> filesNames,
+    List<Uint8List> filesBytes,
     String? uploadedBy,
   );
 

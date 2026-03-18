@@ -22,7 +22,6 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
   Future<DataState<List<FileModel>>> openDirectory(int? directoryId) async {
     try {
       if (directoryId != null) {
-        print(directoryId);
         final response = await _apiService.openDirectory(directoryId);
         return DataSuccess(response);
       } else {
@@ -30,7 +29,6 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
         return DataSuccess(response);
       }
     } on DioException catch (e) {
-      print(e.response);
       return DataFailed(e);
     }
   }
@@ -120,25 +118,30 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
   @override
   Future<DataState<List<FileModel>>> uploadFiles(
     int directoryId,
-    List<Uint8List> files,
+    List<String> filesNames,
+    List<Uint8List> filesBytes,
     String? uploadedBy,
   ) async {
     try {
       // Write all files as MultipartFile into a list
       List<MultipartFile> multipartFiles = [];
-      for (int index = 0; index < files.length; index++) {
-        MultipartFile multipartFile = MultipartFile.fromBytes(files[index]);
+      for (int index = 0; index < filesBytes.length; index++) {
+        MultipartFile multipartFile = MultipartFile.fromBytes(
+          filesBytes[index],
+          filename: filesNames[index],
+        );
         multipartFiles.add(multipartFile);
       }
       // Create form data body
       final body = FormData.fromMap({
         'files': multipartFiles,
         'parent_id': directoryId,
-        'uploaded_by': ?uploadedBy,
+        'uploaded_by': uploadedBy,
       });
       final response = await _apiService.uploadFiles(body);
       return DataSuccess(response);
     } on DioException catch (e) {
+      print(e.response);
       return DataFailed(e);
     }
   }

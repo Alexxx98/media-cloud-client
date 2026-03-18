@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:client/core/data_state.dart';
@@ -13,12 +12,14 @@ class UploadFiles {
 
   Future<DataState<List<FileEntity>>> call(
     int directoryId,
-    List<Uint8List> files,
+    List<String> filesNames,
+    List<Uint8List> filesBytes,
     String? uploadedBy,
   ) async {
     return await _mediaCloudRepository.uploadFiles(
       directoryId,
-      files,
+      filesNames,
+      filesBytes,
       uploadedBy,
     );
   }

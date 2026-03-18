@@ -58,10 +58,16 @@ class PickFilesEvent extends MediaCloudEvent {
 
 class UploadFilesEvent extends MediaCloudEvent {
   final int directoryId;
-  final List<Uint8List> files;
+  final List<String> filesNames;
+  final List<Uint8List> filesBytes;
   final String? uploadedBy;
 
-  UploadFilesEvent(this.directoryId, this.files, this.uploadedBy);
+  UploadFilesEvent(
+    this.directoryId,
+    this.filesNames,
+    this.filesBytes,
+    this.uploadedBy,
+  );
 }
 
 class RenameDirectoryEvent extends MediaCloudEvent {

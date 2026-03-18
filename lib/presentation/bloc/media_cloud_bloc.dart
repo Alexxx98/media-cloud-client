@@ -166,9 +166,11 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
         pickedFiles: null,
       ),
     );
+    add(OpenDirectoryEvent(state.currentDirectory));
     final dataState = await uploadFilesUseCase(
       event.directoryId,
-      event.files,
+      event.filesNames,
+      event.filesBytes,
       event.uploadedBy,
     );
     if (dataState is DataSuccess) {

@@ -115,6 +115,7 @@ class _UploadFilesFormState extends State<UploadFilesForm> {
                                           ),
                                     ),
                                     onPressed: () {
+                                      List<String> filesNames = [];
                                       List<Uint8List> filesBytes = [];
 
                                       for (
@@ -122,6 +123,9 @@ class _UploadFilesFormState extends State<UploadFilesForm> {
                                         index < state.pickedFiles!.length;
                                         index++
                                       ) {
+                                        filesNames.add(
+                                          state.pickedFiles![index].name,
+                                        );
                                         filesBytes.add(
                                           state.pickedFiles![index].bytes!,
                                         );
@@ -129,6 +133,7 @@ class _UploadFilesFormState extends State<UploadFilesForm> {
                                       widget.bloc.add(
                                         UploadFilesEvent(
                                           state.currentDirectory!.id!,
+                                          filesNames,
                                           filesBytes,
                                           uploadedByController.text,
                                         ),
