@@ -22,6 +22,7 @@ class MediaCloudState extends Equatable {
   // copyWith method allows to store parameters data across multiple emits
   // The copyWIth name is just a convention, not built in flutter method to override
   MediaCloudState copyWith({
+    FileExplorerStatus? status,
     FileEntity? currentDirectory,
     List<FileEntity>? loadedFiles,
     List<PlatformFile>? pickedFiles,
@@ -30,7 +31,7 @@ class MediaCloudState extends Equatable {
   }) {
     return MediaCloudState(
       // If new parameter value is passed, use it, if not, keep the current one
-      status: status,
+      status: status ?? this.status,
       currentDirectory: currentDirectory ?? this.currentDirectory,
       loadedFiles: loadedFiles ?? this.loadedFiles,
       pickedFiles: pickedFiles ?? this.pickedFiles,

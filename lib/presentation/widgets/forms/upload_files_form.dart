@@ -128,7 +128,7 @@ class _UploadFilesFormState extends State<UploadFilesForm> {
                                       }
                                       widget.bloc.add(
                                         UploadFilesEvent(
-                                          currentDirectoryId!,
+                                          state.currentDirectory!.id!,
                                           filesBytes,
                                           uploadedByController.text,
                                         ),

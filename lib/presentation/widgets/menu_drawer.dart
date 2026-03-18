@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MenuDrawer extends StatelessWidget {
-  const MenuDrawer({super.key});
+  final MediaCloudBloc bloc;
+
+  const MenuDrawer({super.key, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<MediaCloudBloc>();
-
     return Drawer(
       backgroundColor: Colors.black,
       child: ListView(
@@ -46,7 +46,7 @@ class MenuDrawer extends StatelessWidget {
                 icon: Icon(Icons.file_upload),
                 onPressed: () {
                   showDialog(
-                    context: (context),
+                    context: context,
                     builder: (dialogContext) {
                       return UploadFilesForm(bloc: bloc);
                     },

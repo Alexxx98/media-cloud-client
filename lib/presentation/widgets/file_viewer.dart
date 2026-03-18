@@ -1,5 +1,4 @@
 import 'package:client/presentation/bloc/media_cloud_bloc.dart';
-import 'package:client/presentation/bloc/media_cloud_event.dart';
 import 'package:client/presentation/bloc/media_cloud_state.dart';
 import 'package:client/presentation/widgets/components/file_representation.dart';
 import 'package:flutter/material.dart';

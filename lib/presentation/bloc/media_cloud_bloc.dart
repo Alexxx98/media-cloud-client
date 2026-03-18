@@ -54,6 +54,7 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
     on<OpenDirectoryEvent>(_onOpenDirectory);
     on<OpenPreviousDirectoryEvent>(_onOpenPreviousDirectory);
     on<CreateDirectoryEvent>(_onCreateDirectory);
+    on<PickFilesEvent>(_onPickFiles);
     on<UploadFilesEvent>(_onUploadFiles);
   }
 
@@ -85,7 +86,7 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
       );
     } else {
       emit(
-        MediaCloudState(
+        state.copyWith(
           status: FileExplorerStatus.error,
           errorMessage: 'Cannot fetch the directory data',
         ),
@@ -98,13 +99,7 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
     OpenPreviousDirectoryEvent event,
     Emitter<MediaCloudState> emit,
   ) async {
-    emit(
-      MediaCloudState(
-        status: FileExplorerStatus.loading,
-        pickedFiles: null,
-        errorMessage: null,
-      ),
-    );
+    emit(MediaCloudState(status: FileExplorerStatus.loading));
     final dataState = await openPreviousDirectoryUseCase(
       event.currentDirectoryId,
     );
@@ -112,12 +107,13 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
       emit(
         MediaCloudState(
           status: FileExplorerStatus.success,
+          loadedFiles: dataState.data!.files,
           currentDirectory: dataState.data!.directory,
         ),
       );
     } else {
       emit(
-        MediaCloudState(
+        state.copyWith(
           status: FileExplorerStatus.error,
           errorMessage: 'Unable to load the previous directory',
         ),
@@ -129,19 +125,13 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
     CreateDirectoryEvent event,
     Emitter<MediaCloudState> emit,
   ) async {
-    emit(
-      MediaCloudState(
-        status: FileExplorerStatus.loading,
-        errorMessage: null,
-        pickedFiles: null,
-      ),
-    );
+    emit(state.copyWith(status: FileExplorerStatus.loading));
     final dataState = await createDirectoryUseCase(event.directory);
     if (dataState is DataSuccess) {
       add(OpenDirectoryEvent(state.currentDirectory));
     } else {
       emit(
-        MediaCloudState(
+        state.copyWith(
           status: FileExplorerStatus.error,
           errorMessage: 'Could not create a new directory.',
         ),
@@ -149,12 +139,28 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
     }
   }
 
+  void _onPickFiles(PickFilesEvent event, Emitter<MediaCloudState> emit) {
+    emit(
+      state.copyWith(
+        status: FileExplorerStatus.loading,
+        errorMessage: null,
+        pickedFiles: null,
+      ),
+    );
+    emit(
+      state.copyWith(
+        status: FileExplorerStatus.success,
+        pickedFiles: event.files,
+      ),
+    );
+  }
+
   Future<void> _onUploadFiles(
     UploadFilesEvent event,
     Emitter<MediaCloudState> emit,
   ) async {
     emit(
-      MediaCloudState(
+      state.copyWith(
         status: FileExplorerStatus.loading,
         errorMessage: null,
         pickedFiles: null,
@@ -166,10 +172,10 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
       event.uploadedBy,
     );
     if (dataState is DataSuccess) {
-      emit(MediaCloudState(status: FileExplorerStatus.success));
+      emit(state.copyWith(status: FileExplorerStatus.success));
     } else {
       emit(
-        MediaCloudState(
+        state.copyWith(
           status: FileExplorerStatus.error,
           errorMessage: 'Unable to upload your files',
         ),
