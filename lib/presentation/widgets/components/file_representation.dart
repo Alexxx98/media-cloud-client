@@ -1,6 +1,7 @@
 import 'package:client/business_logic/entities/file.dart';
 import 'package:client/presentation/bloc/media_cloud_bloc.dart';
 import 'package:client/presentation/bloc/media_cloud_event.dart';
+import 'package:client/presentation/widgets/file_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,7 +22,13 @@ class FileRepresentation extends StatelessWidget {
             icon: Icon(Icons.file_open),
             color: Colors.blueGrey.shade900,
             iconSize: 75,
-            onPressed: () => mediaCloudBloc.add(StreamFileEvent(file.id!)),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    FileViewer(fileId: file.id!, bloc: mediaCloudBloc),
+              ),
+            ),
           ),
         ],
       );

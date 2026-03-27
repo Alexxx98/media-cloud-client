@@ -141,7 +141,6 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
       final response = await _apiService.uploadFiles(body);
       return DataSuccess(response);
     } on DioException catch (e) {
-      print(e.response);
       return DataFailed(e);
     }
   }

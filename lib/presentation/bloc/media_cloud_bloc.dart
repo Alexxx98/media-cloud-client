@@ -56,6 +56,7 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
     on<CreateDirectoryEvent>(_onCreateDirectory);
     on<PickFilesEvent>(_onPickFiles);
     on<UploadFilesEvent>(_onUploadFiles);
+    on<StreamFileEvent>(_onStreamFile);
   }
 
   // On open directory event
@@ -63,13 +64,7 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
     OpenDirectoryEvent event,
     Emitter<MediaCloudState> emit,
   ) async {
-    emit(
-      MediaCloudState(
-        status: FileExplorerStatus.loading,
-        errorMessage: null,
-        pickedFiles: null,
-      ),
-    );
+    emit(MediaCloudState(status: FileExplorerStatus.loading));
     DataState<List<FileEntity>> dataState;
     if (event.directory != null) {
       dataState = await openDirectoryUseCase(event.directory!.id);
@@ -141,11 +136,7 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
 
   void _onPickFiles(PickFilesEvent event, Emitter<MediaCloudState> emit) {
     emit(
-      state.copyWith(
-        status: FileExplorerStatus.loading,
-        errorMessage: null,
-        pickedFiles: null,
-      ),
+      state.copyWith(status: FileExplorerStatus.loading, errorMessage: null),
     );
     emit(
       state.copyWith(
@@ -160,11 +151,7 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
     Emitter<MediaCloudState> emit,
   ) async {
     emit(
-      state.copyWith(
-        status: FileExplorerStatus.loading,
-        errorMessage: null,
-        pickedFiles: null,
-      ),
+      state.copyWith(status: FileExplorerStatus.loading, errorMessage: null),
     );
     add(OpenDirectoryEvent(state.currentDirectory));
     final dataState = await uploadFilesUseCase(
@@ -180,6 +167,29 @@ class MediaCloudBloc extends Bloc<MediaCloudEvent, MediaCloudState> {
         state.copyWith(
           status: FileExplorerStatus.error,
           errorMessage: 'Unable to upload your files',
+        ),
+      );
+    }
+  }
+
+  Future<void> _onStreamFile(
+    StreamFileEvent event,
+    Emitter<MediaCloudState> emit,
+  ) async {
+    emit(state.copyWith(status: FileExplorerStatus.loading));
+    final dataState = await streamFileUseCase(event.fileId);
+    if (dataState is DataSuccess && dataState.data != null) {
+      emit(
+        state.copyWith(
+          status: FileExplorerStatus.success,
+          fileBytes: dataState.data,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          status: FileExplorerStatus.error,
+          errorMessage: 'Unable to stream the chosen file.',
         ),
       );
     }

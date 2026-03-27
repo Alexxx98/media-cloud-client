@@ -1,0 +1,47 @@
+import 'package:client/presentation/bloc/media_cloud_bloc.dart';
+import 'package:client/presentation/bloc/media_cloud_state.dart';
+import 'package:client/presentation/widgets/components/file_representation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class FileExplorer extends StatelessWidget {
+  const FileExplorer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey.shade600,
+      body: BlocBuilder<MediaCloudBloc, MediaCloudState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case FileExplorerStatus.loading:
+              return CircularProgressIndicator();
+            case FileExplorerStatus.success:
+              if (state.loadedFiles != null) {
+                return GridView.builder(
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 150,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                  ),
+                  itemCount: state.loadedFiles!.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: FileRepresentation(
+                        file: state.loadedFiles![index],
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return SizedBox();
+              }
+            case FileExplorerStatus.error:
+              return SizedBox(child: Text(state.errorMessage!));
+          }
+        },
+      ),
+    );
+  }
+}

@@ -47,7 +47,8 @@ abstract class MediaCloudApiService {
   );
 
   // Stream File
-  @GET('file/{fileId}/stream')
+  @GET('/file/{fileId}/stream')
+  @DioResponseType(ResponseType.bytes)
   Future<Uint8List> streamFile(@Path('fileId') int fileId);
 
   // POST METHODS

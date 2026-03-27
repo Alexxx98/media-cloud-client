@@ -1,6 +1,7 @@
 import 'package:client/business_logic/entities/file.dart';
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 
 enum FileExplorerStatus { loading, success, error }
 
@@ -8,6 +9,7 @@ class MediaCloudState extends Equatable {
   final FileExplorerStatus status;
   final FileEntity? currentDirectory;
   final List<FileEntity>? loadedFiles;
+  final Uint8List? fileBytes;
   final List<PlatformFile>? pickedFiles;
   final String? errorMessage;
 
@@ -15,6 +17,7 @@ class MediaCloudState extends Equatable {
     this.status = FileExplorerStatus.loading,
     this.currentDirectory,
     this.loadedFiles,
+    this.fileBytes,
     this.pickedFiles,
     this.errorMessage,
   });
@@ -25,6 +28,7 @@ class MediaCloudState extends Equatable {
     FileExplorerStatus? status,
     FileEntity? currentDirectory,
     List<FileEntity>? loadedFiles,
+    Uint8List? fileBytes,
     List<PlatformFile>? pickedFiles,
     bool? isLoading,
     String? errorMessage,
@@ -34,8 +38,8 @@ class MediaCloudState extends Equatable {
       status: status ?? this.status,
       currentDirectory: currentDirectory ?? this.currentDirectory,
       loadedFiles: loadedFiles ?? this.loadedFiles,
-      pickedFiles: pickedFiles ?? this.pickedFiles,
-
+      fileBytes: fileBytes,
+      pickedFiles: pickedFiles,
       // Error message does not require to be state persistant
       errorMessage: errorMessage,
     );
@@ -46,6 +50,7 @@ class MediaCloudState extends Equatable {
     status,
     currentDirectory,
     loadedFiles,
+    fileBytes,
     pickedFiles,
     errorMessage,
   ];

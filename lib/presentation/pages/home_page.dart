@@ -1,5 +1,5 @@
 import 'package:client/presentation/bloc/media_cloud_bloc.dart';
-import 'package:client/presentation/widgets/file_viewer.dart';
+import 'package:client/presentation/widgets/file_explorer.dart';
 import 'package:client/presentation/widgets/menu_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       endDrawer: MenuDrawer(bloc: bloc),
-      body: FileViewer(),
+      body: FileExplorer(),
     );
   }
 }
