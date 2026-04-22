@@ -16,8 +16,15 @@ class PreviousDirectoryResponseModel extends PreviousDirectoryResponseEntity {
   // Deserializer
   factory PreviousDirectoryResponseModel.fromJson(Map<String, dynamic> json) {
     return PreviousDirectoryResponseModel(
-      directory: json['directory'],
-      files: json['files'],
+      directory: (FileModel.fromJson(json['directory'])),
+      files: (json['files'] as List)
+          .map(
+            (fileJson) => FileModel.fromJson(fileJson as Map<String, dynamic>),
+          )
+          .toList(),
     );
   }
+
+  // Serializer
+  Map<String, dynamic> toJson() => {'directory': directory, 'files': files};
 }

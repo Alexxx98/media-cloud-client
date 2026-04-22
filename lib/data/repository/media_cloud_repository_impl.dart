@@ -39,8 +39,10 @@ class MediaCloudRepositoryImpl implements MediaCloudRepository {
   ) async {
     try {
       final response = await _apiService.openPreviousDirectory(directoryId);
+      print(response);
       return DataSuccess(response);
     } on DioException catch (e) {
+      print(e.response);
       return DataFailed(e);
     }
   }

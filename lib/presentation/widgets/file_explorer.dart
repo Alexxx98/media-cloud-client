@@ -25,7 +25,16 @@ class FileExplorer extends StatelessWidget {
               if (state.loadedFiles != null) {
                 List<FileEntity> files = state.loadedFiles!;
                 if (state.currentDirectory != null) {
-                  files.insert(0, FileModel(name: 'Previous'));
+                  if (files.isEmpty) {
+                    files.insert(0, FileModel(name: 'Previous'));
+                  }
+                  try {
+                    if (files[0].name != 'Previous') {
+                      files.insert(0, FileModel(name: 'Previous'));
+                    }
+                  } on Exception {
+                    // Do nothing
+                  }
                 }
                 return GridView.builder(
                   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
